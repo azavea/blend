@@ -23,6 +23,8 @@ class Resource:
         """
         Extract a lower case extension from the specified file name and return it
         along with a filetype string
+        Arguments:
+        filename -- The full path to a file that may or may not exist.
         """
         basename, ext = os.path.splitext(filename)
         ext = ext.lower()[1:]
@@ -39,6 +41,8 @@ class Resource:
         """
         Extract a lower case name from the specified filename by removing the
         extension, '-min', and and version number if they are present.
+        Arguments:
+        filename -- The full path to a file that may or may not exist.
         """
         name, dot, extension =  filename.rpartition('.')
         lowerName = name.lower()
