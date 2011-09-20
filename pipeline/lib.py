@@ -15,6 +15,40 @@ class Resource:
             raise Exception('The filename argument must be set to a string')
 
         self._filename = filename
+        self._extension, self._filetype = Resource._parseExtensionAndFileType(filename)
+        self._baseName = Resource._parseBaseName(filename)
+
+    @staticmethod
+    def _parseExtensionAndFileType(filename):
+        """
+        Extract a lower case extension from the specified file name and return it
+        along with a filetype string
+        """
+        basename, ext = os.path.splitext(filename)
+        ext = ext.lower()[1:]
+
+        if ext == 'js' or ext == 'javascript':
+            filetype = 'javascript'
+        else:
+            filetype = 'unknown'
+
+        return (ext, filetype)
+
+    @staticmethod
+    def _parseBaseName(filename):
+        """
+        Extract a lower case name from the specified filename by removing the
+        extension, '-min', and and version number if they are present.
+        """
+        name, dot, extension =  filename.rpartition('.')
+        lowerName = name.lower()
+        if lowerName[-4:] == '-min':
+            lowerName = lowerName[:-4]
+        lowerNameWithoutVersion, dash, version = lowerName.rpartition('-')
+        if dash == '':
+            return lowerName
+        else:
+            return lowerNameWithoutVersion
 
     @property
     def filename(self):
@@ -28,8 +62,7 @@ class Resource:
         """
         The file name extension of the physical file in lower case without the '.' character
         """
-        basename, ext = os.path.splitext(self.filename)
-        return ext.lower()[1:]
+        return self._extension
 
     @property
     def filetype(self):
@@ -37,22 +70,11 @@ class Resource:
         A lower case string describing the content of this file.
         Possible values: unknown, javascript
         """
-        if self.extension == 'js' or self.extension == 'javascript':
-            return 'javascript'
-        else:
-            return 'unknown'
+        return self._filetype
 
     @property
     def baseName(self):
         """
         The name of the resource with version numbers and minification designations removed/
         """
-        name, dot, extension =  self.filename.rpartition('.')
-        lowerName = name.lower()
-        if lowerName[-4:] == '-min':
-            lowerName = lowerName[:-4]
-        lowerNameWithoutVersion, dash, version = lowerName.rpartition('-')
-        if dash == '':
-            return lowerName
-        else:
-            return lowerNameWithoutVersion
+        return self._baseName
