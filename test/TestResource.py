@@ -15,3 +15,32 @@ class TestResource(unittest.TestCase):
         testFileName = 'some/file/name.txt'
         resource = Resource(testFileName)
         self.assertEqual(testFileName, resource.filename)
+
+    def testResourceHasFileTypePropertyWithADefaultValueOfUnknown(self):
+        testFileName = 'someFile'
+        resource = Resource(testFileName)
+        self.assertEqual('unknown', resource.filetype)
+
+    def testResourceHasAnExtensionProperty(self):
+        testFileNamesAndExpectedExtensions = [
+            ('someFile.js',            'js'),
+            ('someFile.JS',            'js'),
+            ('noExtension',            ''),
+            ('someFile.SomECraZytype', 'somecrazytype')]
+        for testFileName, expectedExtension in testFileNamesAndExpectedExtensions:
+            resource = Resource(testFileName)
+            self.assertEqual(expectedExtension, resource.extension, 'Expected the extension of "' +
+                testFileName + '" to be "' + expectedExtension + '"')
+
+    def testResourceDetectsFileTypeByExtension(self):
+        testFileNamesAndExpectedFileTypes = [
+            ('file.someCrazyThing', 'unknown'),
+            ('file.js',             'javascript'),
+            ('file.Js',             'javascript'),
+            ('file.JS',             'javascript'),
+            ('file.awesome.js',     'javascript'),
+            ('file.JavaScript',     'javascript')]
+        for testFileName, expectedFileType in testFileNamesAndExpectedFileTypes:
+            resource = Resource(testFileName)
+            self.assertEqual(expectedFileType, resource.filetype, 'Expected "' + testFileName +
+                '" to be detected as "' + expectedFileType + '"')

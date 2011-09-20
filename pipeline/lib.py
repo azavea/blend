@@ -1,3 +1,5 @@
+import os
+
 class Resource:
     """
     Representation of a file on disk
@@ -20,3 +22,22 @@ class Resource:
         The path at which the physical file is/will be located.
         """
         return self._filename
+
+    @property
+    def extension(self):
+        """
+        The file name extension of the physical file in lower case without the '.' character
+        """
+        basename, ext = os.path.splitext(self.filename)
+        return ext.lower()[1:]
+
+    @property
+    def filetype(self):
+        """
+        A lower case string describing the content of this file.
+        Possible values: unknown, javascript
+        """
+        if self.extension == 'js' or self.extension == 'javascript':
+            return 'javascript'
+        else:
+            return 'unknown'
