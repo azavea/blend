@@ -41,3 +41,18 @@ class Resource:
             return 'javascript'
         else:
             return 'unknown'
+
+    @property
+    def baseName(self):
+        """
+        The name of the resource with version numbers and minification designations removed/
+        """
+        name, dot, extension =  self.filename.rpartition('.')
+        lowerName = name.lower()
+        if lowerName[-4:] == '-min':
+            lowerName = lowerName[:-4]
+        lowerNameWithoutVersion, dash, version = lowerName.rpartition('-')
+        if dash == '':
+            return lowerName
+        else:
+            return lowerNameWithoutVersion

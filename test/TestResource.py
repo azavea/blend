@@ -44,3 +44,14 @@ class TestResource(unittest.TestCase):
             resource = Resource(testFileName)
             self.assertEqual(expectedFileType, resource.filetype, 'Expected "' + testFileName +
                 '" to be detected as "' + expectedFileType + '"')
+
+    def testResourceHasABaseNameProperty(self):
+        testFileNamesAndExpectedBaseNames = [
+            ('file.js', 'file'),
+            ('FILE.JS', 'file'),
+            ('some-Plugin-2.3.2-min.js', 'some-plugin'),
+            ('jQuery-1.2.3.js', 'jquery')]
+        for testFileName, expectedBaseName in testFileNamesAndExpectedBaseNames:
+            resource = Resource(testFileName)
+            self.assertEqual(expectedBaseName, resource.baseName, 'Expected the baseName of "' +
+                testFileName + '" to be "'+ expectedBaseName + '" and not "' + resource.baseName + '"')
