@@ -23,7 +23,7 @@ class TestResource(unittest.TestCase):
 
     def testResourceHasAnExtensionProperty(self):
         testFileNamesAndExpectedExtensions = [
-            ('someFile.js',            'js'),
+            ('/var/someFile.js',            'js'),
             ('someFile.JS',            'js'),
             ('noExtension',            ''),
             ('someFile.SomECraZytype', 'somecrazytype')]
@@ -35,7 +35,7 @@ class TestResource(unittest.TestCase):
     def testResourceDetectsFileTypeByExtension(self):
         testFileNamesAndExpectedFileTypes = [
             ('file.someCrazyThing', 'unknown'),
-            ('file.js',             'javascript'),
+            ('c:\\file.js',             'javascript'),
             ('file.Js',             'javascript'),
             ('file.JS',             'javascript'),
             ('file.awesome.js',     'javascript'),
@@ -47,7 +47,7 @@ class TestResource(unittest.TestCase):
 
     def testResourceHasABaseNameProperty(self):
         testFileNamesAndExpectedBaseNames = [
-            ('file.js', 'file'),
+            ('/usr/local/file.js', 'file'),
             ('FILE.JS', 'file'),
             ('some-Plugin-2.3.2-min.js', 'some-plugin'),
             ('jQuery-1.2.3.js', 'jquery')]

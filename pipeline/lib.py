@@ -44,7 +44,8 @@ class Resource:
         Arguments:
         filename -- The full path to a file that may or may not exist.
         """
-        name, dot, extension =  filename.rpartition('.')
+        directory, file = os.path.split(filename)
+        name, dot, extension =  file.rpartition('.')
         lowerName = name.lower()
         if lowerName[-4:] == '-min':
             lowerName = lowerName[:-4]
