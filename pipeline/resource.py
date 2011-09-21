@@ -89,7 +89,7 @@ class Resource:
         """
         Get a list of Resource instances representing all the files in the current working
         directory that have the specified fileType
-        Attributes:
+        Arguments:
         fileType -- The string name of the type of file to be found. Can be unknown, javascript, or css
         Remarks:
         Calls findAllOfTypeInPath passing the specified fileType and '.' as the path argument.
