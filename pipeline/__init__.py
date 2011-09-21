@@ -1,2 +1,1 @@
-from lib import Resource
-  
+from resource import Resource
