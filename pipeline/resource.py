@@ -91,9 +91,23 @@ class Resource:
         directory that have the specified fileType
         Attributes:
         fileType -- The string name of the type of file to be found. Can be unknown, javascript, or css
+        Remarks:
+        Calls findAllOfTypeInPath passing the specified fileType and '.' as the path argument.
+        """
+        return Resource.findAllOfTypeInPath(fileType, '.')
+
+
+    @staticmethod
+    def findAllOfTypeInPath(fileType, path):
+        """
+        Get a list of Resource instances representing all the files in the current working
+        directory that have the specified fileType
+        Arguments:
+        fileType -- The string name of the type of file to be found. Can be unknown, javascript, or css
+        path -- The base directory to be recursively searching for files
         """
         resources = []
-        for dirPath, dirNames, fileNames in os.walk('.'):
+        for dirPath, dirNames, fileNames in os.walk(path):
             for fileName in fileNames:
                 resource = Resource(os.path.join(dirPath, fileName))
                 if resource.filetype == fileType:

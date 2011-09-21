@@ -64,10 +64,19 @@ class TestResource(unittest.TestCase):
         TestResource.cleanUpTestFiles(pathsToTestFiles)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
 
+    def testFindAllJavascriptResourcesInAPath(self):
+        pathsToTestFiles = ['/tmp/subdir/test.js', '/tmp/test.css', '/tmp/test.html']
+        TestResource.createTestFiles(pathsToTestFiles)
+        resources = Resource.findAllOfTypeInPath('javascript', '/tmp')
+        TestResource.cleanUpTestFiles(pathsToTestFiles)
+        self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
+
     @staticmethod
     def createTestFiles(pathsToFiles):
         for pathToFile in pathsToFiles:
             if not os.path.exists(pathToFile):
+                if os.path.dirname(pathToFile) != '' and not os.path.exists(os.path.dirname(pathToFile)):
+                    os.makedirs(os.path.dirname(pathToFile))
                 open(pathToFile, 'w').close()
 
     @staticmethod
