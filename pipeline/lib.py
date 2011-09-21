@@ -4,29 +4,29 @@ class Resource:
     """
     Representation of a file on disk
     """
-    def __init__(self, filename):
+    def __init__(self, pathToFile):
         """
         Arguments:
-        filename -- The path at which the physical file is/will be located.
+        pathToFile -- The path at which the physical file is/will be located.
         """
-        if not filename:
-            raise Exception('Resource must be created with a filename')
-        if not isinstance(filename, str):
-            raise Exception('The filename argument must be set to a string')
+        if not pathToFile:
+            raise Exception('Resource must be created with a pathToFile')
+        if not isinstance(pathToFile, str):
+            raise Exception('The pathToFile argument must be set to a string')
 
-        self._filename = filename
-        self._extension, self._filetype = Resource._parseExtensionAndFileType(filename)
-        self._baseName = Resource._parseBaseName(filename)
+        self._pathToFile = pathToFile
+        self._extension, self._filetype = Resource._parseExtensionAndFileType(pathToFile)
+        self._baseName = Resource._parseBaseName(pathToFile)
 
     @staticmethod
-    def _parseExtensionAndFileType(filename):
+    def _parseExtensionAndFileType(pathToFile):
         """
         Extract a lower case extension from the specified file name and return it
         along with a filetype string
         Arguments:
-        filename -- The full path to a file that may or may not exist.
+        pathToFile -- The full path to a file that may or may not exist.
         """
-        basename, ext = os.path.splitext(filename)
+        basename, ext = os.path.splitext(pathToFile)
         ext = ext.lower()[1:]
 
         if ext == 'js' or ext == 'javascript':
@@ -37,14 +37,14 @@ class Resource:
         return (ext, filetype)
 
     @staticmethod
-    def _parseBaseName(filename):
+    def _parseBaseName(pathToFile):
         """
-        Extract a lower case name from the specified filename by removing the
+        Extract a lower case name from the specified pathToFile by removing the
         extension, '-min', and and version number if they are present.
         Arguments:
-        filename -- The full path to a file that may or may not exist.
+        pathToFile -- The full path to a file that may or may not exist.
         """
-        directory, file = os.path.split(filename)
+        directory, file = os.path.split(pathToFile)
         name, dot, extension =  file.rpartition('.')
         lowerName = name.lower()
         if lowerName[-4:] == '-min':
@@ -56,11 +56,11 @@ class Resource:
             return lowerNameWithoutVersion
 
     @property
-    def filename(self):
+    def pathToFile(self):
         """
         The path at which the physical file is/will be located.
         """
-        return self._filename
+        return self._pathToFile
 
     @property
     def extension(self):

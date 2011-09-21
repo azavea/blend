@@ -5,16 +5,16 @@ from pipeline import Resource
 class TestResource(unittest.TestCase):
     """Asserts that the properties and methods of the Resource class behave correctly."""
 
-    def testResourceMustBeCreatedWithAFileName(self):
+    def testResourceMustBeCreatedWithPathToFile(self):
         self.assertRaises(Exception, Resource)
 
-    def testResourceMustBeCreatedWithAStringFilename(self):
+    def testResourceMustBeCreatedWithAStringPathToFile(self):
         self.assertRaises(Exception, Resource, 1)
 
-    def testResourceHasFilenamePropertySetOnInit(self):
+    def testResourceHasPathToFilePropertySetOnInit(self):
         testFileName = 'some/file/name.txt'
         resource = Resource(testFileName)
-        self.assertEqual(testFileName, resource.filename)
+        self.assertEqual(testFileName, resource.pathToFile)
 
     def testResourceHasFileTypePropertyWithADefaultValueOfUnknown(self):
         testFileName = 'someFile'
@@ -27,10 +27,10 @@ class TestResource(unittest.TestCase):
             ('someFile.JS',            'js'),
             ('noExtension',            ''),
             ('someFile.SomECraZytype', 'somecrazytype')]
-        for testFileName, expectedExtension in testFileNamesAndExpectedExtensions:
-            resource = Resource(testFileName)
+        for testFilePath, expectedExtension in testFileNamesAndExpectedExtensions:
+            resource = Resource(testFilePath)
             self.assertEqual(expectedExtension, resource.extension, 'Expected the extension of "' +
-                testFileName + '" to be "' + expectedExtension + '"')
+                testFilePath + '" to be "' + expectedExtension + '"')
 
     def testResourceDetectsFileTypeByExtension(self):
         testFileNamesAndExpectedFileTypes = [
@@ -40,18 +40,18 @@ class TestResource(unittest.TestCase):
             ('file.JS',             'javascript'),
             ('file.awesome.js',     'javascript'),
             ('file.JavaScript',     'javascript')]
-        for testFileName, expectedFileType in testFileNamesAndExpectedFileTypes:
-            resource = Resource(testFileName)
-            self.assertEqual(expectedFileType, resource.filetype, 'Expected "' + testFileName +
+        for testFilePath, expectedFileType in testFileNamesAndExpectedFileTypes:
+            resource = Resource(testFilePath)
+            self.assertEqual(expectedFileType, resource.filetype, 'Expected "' + testFilePath +
                 '" to be detected as "' + expectedFileType + '"')
 
     def testResourceHasABaseNameProperty(self):
-        testFileNamesAndExpectedBaseNames = [
+        testFilePathsAndExpectedBaseNames = [
             ('/usr/local/file.js', 'file'),
             ('FILE.JS', 'file'),
             ('some-Plugin-2.3.2-min.js', 'some-plugin'),
             ('jQuery-1.2.3.js', 'jquery')]
-        for testFileName, expectedBaseName in testFileNamesAndExpectedBaseNames:
-            resource = Resource(testFileName)
+        for testFilePath, expectedBaseName in testFilePathsAndExpectedBaseNames:
+            resource = Resource(testFilePath)
             self.assertEqual(expectedBaseName, resource.baseName, 'Expected the baseName of "' +
-                testFileName + '" to be "'+ expectedBaseName + '" and not "' + resource.baseName + '"')
+                testFilePath + '" to be "'+ expectedBaseName + '" and not "' + resource.baseName + '"')
