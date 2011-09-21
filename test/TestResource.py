@@ -1,4 +1,5 @@
 import unittest
+import os
 
 from pipeline import Resource
 
@@ -55,3 +56,22 @@ class TestResource(unittest.TestCase):
             resource = Resource(testFilePath)
             self.assertEqual(expectedBaseName, resource.baseName, 'Expected the baseName of "' +
                 testFilePath + '" to be "'+ expectedBaseName + '" and not "' + resource.baseName + '"')
+
+    def testFindAllJavascriptResources(self):
+        pathsToTestFiles = ['test.js', 'test.css', 'test.html']
+        TestResource.createTestFiles(pathsToTestFiles)
+        resources = Resource.findAllOfType('javascript')
+        TestResource.cleanUpTestFiles(pathsToTestFiles)
+        self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
+
+    @staticmethod
+    def createTestFiles(pathsToFiles):
+        for pathToFile in pathsToFiles:
+            if not os.path.exists(pathToFile):
+                open(pathToFile, 'w').close()
+
+    @staticmethod
+    def cleanUpTestFiles(pathsToFiles):
+        for pathToFile in pathsToFiles:
+            if os.path.exists(pathToFile):
+                os.remove(pathToFile)

@@ -83,3 +83,20 @@ class Resource:
         The name of the resource with version numbers and minification designations removed/
         """
         return self._baseName
+
+    @staticmethod
+    def findAllOfType(fileType):
+        """
+        Get a list of Resource instances representing all the files in the current working
+        directory that have the specified fileType
+        Attributes:
+        fileType -- The string name of the type of file to be found. Can be unknown, javascript, or css
+        """
+        resources = []
+        for dirPath, dirNames, fileNames in os.walk('.'):
+            for fileName in fileNames:
+                resource = Resource(os.path.join(dirPath, fileName))
+                if resource.filetype == fileType:
+                    resources.append(resource)
+        return resources
+
