@@ -18,6 +18,13 @@ class Resource:
         self._extension, self._filetype = Resource._parseExtensionAndFileType(pathToFile)
         self._baseName = Resource._parseBaseName(pathToFile)
 
+        if os.path.exists(pathToFile):
+            f = open(pathToFile, 'r')
+            try:
+                self._content = f.read()
+            finally:
+                f.close()
+
     @staticmethod
     def _parseExtensionAndFileType(pathToFile):
         """
@@ -68,6 +75,13 @@ class Resource:
         Whether or not the file exists on disk
         """
         return os.path.exists(self.pathToFile)
+
+    @property
+    def content(self):
+        """
+        The contents of the file
+        """
+        return self._content
 
     @property
     def extension(self):

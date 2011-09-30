@@ -80,6 +80,17 @@ class TestResource(unittest.TestCase):
         self.assertTrue(resource.exists)
         TestResource.cleanUpTestFiles(pathsToTestFiles)
 
+    def testContentProperty(self):
+        pathsToTestFiles = ['/tmp/test.js']
+        content = 'var foo = {};'
+        TestResource.createTestFiles(pathsToTestFiles)
+        f = open(pathsToTestFiles[0], 'w')
+        f.write(content)
+        f.close()
+        resource = Resource(pathsToTestFiles[0])
+        self.assertEquals(content, resource.content)
+        TestResource.cleanUpTestFiles(pathsToTestFiles)
+
     @staticmethod
     def createTestFiles(pathsToFiles):
         for pathToFile in pathsToFiles:
