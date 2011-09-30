@@ -1,1 +1,1 @@
-from resource import Resource
+from Resource import Resource
