@@ -83,6 +83,8 @@ class Resource:
 
         if ext == 'js' or ext == 'javascript':
             file_type = 'javascript'
+        elif ext == 'css':
+            file_type = 'css'
         else:
             file_type = 'unknown'
 

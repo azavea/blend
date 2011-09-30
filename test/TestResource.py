@@ -36,11 +36,13 @@ class TestResource(unittest.TestCase):
     def test_resource_detects_file_type_by_extension(self):
         test_file_paths_and_expected_file_types = [
             ('file.someCrazyThing', 'unknown'),
-            ('c:\\file.js',             'javascript'),
+            ('c:\\file.js',         'javascript'),
             ('file.Js',             'javascript'),
             ('file.JS',             'javascript'),
             ('file.awesome.js',     'javascript'),
-            ('file.JavaScript',     'javascript')]
+            ('file.JavaScript',     'javascript'),
+            ('file.css',            'css'),
+            ('FILE.CSS',            'css')]
         for test_file_path, expected_file_type in test_file_paths_and_expected_file_types:
             resource = Resource(test_file_path)
             self.assertEqual(expected_file_type, resource.file_type, 'Expected "' + test_file_path +
