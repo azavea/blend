@@ -20,6 +20,15 @@ class Resource:
         self._set_content(path_to_file)
 
     def _set_content(self, path_to_file):
+        """
+        Reads the content of the file specified by path_to_file into the _content
+        member variable.
+        Arguments:
+        path_to_file -- The path at which the physical file is be located.
+        Remarks:
+        If path_to_file specifies a non-existent file the _content member variable is
+        set to None
+        """
         if os.path.exists(path_to_file):
             f = open(path_to_file, 'r')
             try:
