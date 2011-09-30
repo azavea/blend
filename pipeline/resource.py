@@ -17,13 +17,17 @@ class Resource:
         self._path_to_file = path_to_file
         self._extension, self._file_type = Resource._parse_extension_and_file_type(path_to_file)
         self._base_name = Resource._parse_base_name(path_to_file)
+        self._set_content(path_to_file)
 
+    def _set_content(self, path_to_file):
         if os.path.exists(path_to_file):
             f = open(path_to_file, 'r')
             try:
                 self._content = f.read()
             finally:
                 f.close()
+        else:
+            self._content = None
 
     @staticmethod
     def _parse_extension_and_file_type(path_to_file):
@@ -104,6 +108,13 @@ class Resource:
         The name of the resource with version numbers and minification designations removed/
         """
         return self._base_name
+
+    @property
+    def requirements(self):
+        """
+        The descriptions of the the other resources that this resource depends on
+        """
+        return None
 
     @staticmethod
     def find_all_of_type(file_type):

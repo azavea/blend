@@ -84,12 +84,24 @@ class TestResource(unittest.TestCase):
     def test_content_property(self):
         path_to_test_file = '/tmp/test.js'
         content = 'var foo = {};'
-        TestResource.create_test_files(path_to_test_file)
-        f = open(path_to_test_file, 'w')
-        f.write(content)
-        f.close()
+        TestResource.create_test_file_with_content(path_to_test_file, content)
         resource = Resource(path_to_test_file)
         self.assertEquals(content, resource.content)
+        TestResource.clean_up_test_files(path_to_test_file)
+
+    def test_requirements_property_for_resource_without_content_is_none(self):
+        resource = Resource('some file')
+        self.assertTrue(resource.content is None)
+        self.assertEqual(None, resource.requirements)
+
+    def test_requirements_property_for_resource_with_plain_content_is_none(self):
+        path_to_test_file = '/tmp/test.js'
+        TestResource.clean_up_test_files(path_to_test_file)
+        content = 'var foo = {};'
+        TestResource.create_test_file_with_content(path_to_test_file, content)
+        resource = Resource(path_to_test_file)
+        self.assertTrue(resource.content == content)
+        self.assertEqual(None, resource.requirements)
         TestResource.clean_up_test_files(path_to_test_file)
 
     @staticmethod
@@ -103,6 +115,15 @@ class TestResource(unittest.TestCase):
                 if os.path.dirname(path_to_file) != '' and not os.path.exists(os.path.dirname(path_to_file)):
                     os.makedirs(os.path.dirname(path_to_file))
                 open(path_to_file, 'w').close()
+
+    @staticmethod
+    def create_test_file_with_content(path_to_test_file, content):
+        TestResource.create_test_files(path_to_test_file)
+        f = open(path_to_test_file, 'w')
+        try:
+            f.write(content)
+        finally:
+            f.close()
 
     @staticmethod
     def clean_up_test_files(paths_to_files):
