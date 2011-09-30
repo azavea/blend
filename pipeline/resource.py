@@ -63,6 +63,13 @@ class Resource:
         return self._pathToFile
 
     @property
+    def exists(self):
+        """
+        Whether or not the file exists on disk
+        """
+        return os.path.exists(self.pathToFile)
+
+    @property
     def extension(self):
         """
         The file name extension of the physical file in lower case without the '.' character

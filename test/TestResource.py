@@ -71,6 +71,15 @@ class TestResource(unittest.TestCase):
         TestResource.cleanUpTestFiles(pathsToTestFiles)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
 
+    def testExistsProperty(self):
+        pathsToTestFiles = ['/tmp/test.js']
+        resource = Resource(pathsToTestFiles[0])
+        # file does not exist yet
+        self.assertFalse(resource.exists)
+        TestResource.createTestFiles(pathsToTestFiles)
+        self.assertTrue(resource.exists)
+        TestResource.cleanUpTestFiles(pathsToTestFiles)
+
     @staticmethod
     def createTestFiles(pathsToFiles):
         for pathToFile in pathsToFiles:
