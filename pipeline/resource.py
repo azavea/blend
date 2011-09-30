@@ -4,77 +4,77 @@ class Resource:
     """
     Representation of a file on disk
     """
-    def __init__(self, pathToFile):
+    def __init__(self, path_to_file):
         """
         Arguments:
-        pathToFile -- The path at which the physical file is/will be located.
+        path_to_file -- The path at which the physical file is/will be located.
         """
-        if not pathToFile:
-            raise Exception('Resource must be created with a pathToFile')
-        if not isinstance(pathToFile, str):
-            raise Exception('The pathToFile argument must be set to a string')
+        if not path_to_file:
+            raise Exception('Resource must be created with a path_to_file')
+        if not isinstance(path_to_file, str):
+            raise Exception('The path_to_file argument must be set to a string')
 
-        self._pathToFile = pathToFile
-        self._extension, self._filetype = Resource._parseExtensionAndFileType(pathToFile)
-        self._baseName = Resource._parseBaseName(pathToFile)
+        self._path_to_file = path_to_file
+        self._extension, self._file_type = Resource._parse_extension_and_file_type(path_to_file)
+        self._base_name = Resource._parse_base_name(path_to_file)
 
-        if os.path.exists(pathToFile):
-            f = open(pathToFile, 'r')
+        if os.path.exists(path_to_file):
+            f = open(path_to_file, 'r')
             try:
                 self._content = f.read()
             finally:
                 f.close()
 
     @staticmethod
-    def _parseExtensionAndFileType(pathToFile):
+    def _parse_extension_and_file_type(path_to_file):
         """
         Extract a lower case extension from the specified file name and return it
-        along with a filetype string
+        along with a file type string
         Arguments:
-        pathToFile -- The full path to a file that may or may not exist.
+        path_to_file -- The full path to a file that may or may not exist.
         """
-        basename, ext = os.path.splitext(pathToFile)
+        base_name, ext = os.path.splitext(path_to_file)
         ext = ext.lower()[1:]
 
         if ext == 'js' or ext == 'javascript':
-            filetype = 'javascript'
+            file_type = 'javascript'
         else:
-            filetype = 'unknown'
+            file_type = 'unknown'
 
-        return ext, filetype
+        return ext, file_type
 
     @staticmethod
-    def _parseBaseName(pathToFile):
+    def _parse_base_name(path_to_file):
         """
-        Extract a lower case name from the specified pathToFile by removing the
+        Extract a lower case name from the specified path_to_file by removing the
         extension, '-min', and and version number if they are present.
         Arguments:
-        pathToFile -- The full path to a file that may or may not exist.
+        path_to_file -- The full path to a file that may or may not exist.
         """
-        directory, file = os.path.split(pathToFile)
+        directory, file = os.path.split(path_to_file)
         name, dot, extension =  file.rpartition('.')
-        lowerName = name.lower()
-        if lowerName[-4:] == '-min':
-            lowerName = lowerName[:-4]
-        lowerNameWithoutVersion, dash, version = lowerName.rpartition('-')
+        lower_name = name.lower()
+        if lower_name[-4:] == '-min':
+            lower_name = lower_name[:-4]
+        lower_name_without_version, dash, version = lower_name.rpartition('-')
         if dash == '':
-            return lowerName
+            return lower_name
         else:
-            return lowerNameWithoutVersion
+            return lower_name_without_version
 
     @property
-    def pathToFile(self):
+    def path_to_file(self):
         """
         The path at which the physical file is/will be located.
         """
-        return self._pathToFile
+        return self._path_to_file
 
     @property
     def exists(self):
         """
         Whether or not the file exists on disk
         """
-        return os.path.exists(self.pathToFile)
+        return os.path.exists(self.path_to_file)
 
     @property
     def content(self):
@@ -91,47 +91,45 @@ class Resource:
         return self._extension
 
     @property
-    def filetype(self):
+    def file_type(self):
         """
         A lower case string describing the content of this file.
         Possible values: unknown, javascript
         """
-        return self._filetype
+        return self._file_type
 
     @property
-    def baseName(self):
+    def base_name(self):
         """
         The name of the resource with version numbers and minification designations removed/
         """
-        return self._baseName
+        return self._base_name
 
     @staticmethod
-    def findAllOfType(fileType):
+    def find_all_of_type(file_type):
         """
         Get a list of Resource instances representing all the files in the current working
-        directory that have the specified fileType
+        directory that have the specified file_type
         Arguments:
-        fileType -- The string name of the type of file to be found. Can be unknown, javascript, or css
+        file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css
         Remarks:
-        Calls findAllOfTypeInPath passing the specified fileType and '.' as the path argument.
+        Calls find_all_of_type_in_path passing the specified file_type and '.' as the path argument.
         """
-        return Resource.findAllOfTypeInPath(fileType, '.')
-
+        return Resource.find_all_of_type_in_path(file_type, '.')
 
     @staticmethod
-    def findAllOfTypeInPath(fileType, path):
+    def find_all_of_type_in_path(file_type, path):
         """
         Get a list of Resource instances representing all the files in the current working
-        directory that have the specified fileType
+        directory that have the specified file_type
         Arguments:
-        fileType -- The string name of the type of file to be found. Can be unknown, javascript, or css
+        file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css
         path -- The base directory to be recursively searching for files
         """
         resources = []
-        for dirPath, dirNames, fileNames in os.walk(path):
-            for fileName in fileNames:
-                resource = Resource(os.path.join(dirPath, fileName))
-                if resource.filetype == fileType:
+        for dir_path, dir_names, file_names in os.walk(path):
+            for file_name in file_names:
+                resource = Resource(os.path.join(dir_path, file_name))
+                if resource.file_type == file_type:
                     resources.append(resource)
         return resources
-
