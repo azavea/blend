@@ -2,7 +2,7 @@ class Requirement:
     """
     Represents the a dependency that one Resource has on another.
     """
-    def __init__(self, name, type):
+    def __init__(self, name, type, insert_location = 0):
         """
         Arguments:
         name -- The string name of the required resource
@@ -22,6 +22,10 @@ class Requirement:
             raise Exception('The type argument must be "local" or "global"')
         self._type = type
 
+        if isinstance(insert_location, basestring):
+            raise Exception('The insert_location argument must be a number or a two-number tuple')
+        self._insert_location = insert_location
+
     @property
     def name(self):
         """
@@ -35,3 +39,10 @@ class Requirement:
         Where to search for the required resource. Can be local or global
         """
         return self._type
+
+    @property
+    def insert_location(self):
+        """
+        The descriptions of the the other resources that this resource depends on
+        """
+        return self._insert_location

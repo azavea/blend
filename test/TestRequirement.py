@@ -23,3 +23,16 @@ class TestRequirement(unittest.TestCase):
         Requirement('name', 'local')
         Requirement('name', 'global')
         self.assertRaises(Exception, Requirement, 'name', 'foo')
+
+    def test_requirement_has_a_default_insert_location(self):
+        requirement = Requirement('name', 'local')
+        self.assertEqual(0, requirement.insert_location)
+
+    def test_requirement_takes_insert_location_as_an_optional_parameter(self):
+        requirement = Requirement('name', 'local', 1)
+        self.assertEqual(1, requirement.insert_location)
+        requirement = Requirement('name', 'local', (10,22))
+        self.assertEqual((10,22), requirement.insert_location)
+
+    def test_insert_location_must_not_be_a_string(self):
+        self.assertRaises(Exception, Requirement, 'name', 'local', 'some string')
