@@ -34,7 +34,7 @@ class Resource:
         else:
             filetype = 'unknown'
 
-        return (ext, filetype)
+        return ext, filetype
 
     @staticmethod
     def _parseBaseName(pathToFile):
