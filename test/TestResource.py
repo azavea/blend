@@ -122,6 +122,18 @@ class TestResource(unittest.TestCase):
         self.assertEqual((34,58), resource.requirements[1].insert_location)
         TestResource.clean_up_test_files(path_to_test_file)
 
+    def test_css_import_statements_found_as_requirements(self):
+        path_to_test_file = '/tmp/test.css'
+        TestResource.clean_up_test_files(path_to_test_file)
+        content = 'h1 {background:red;}\n @import url("something.css")'
+        TestResource.create_test_file_with_content(path_to_test_file, content)
+        resource = Resource(path_to_test_file)
+        self.assertTrue(resource.content == content)
+        self.assertEqual(1, len(resource.requirements))
+        self.assertEqual('something.css', resource.requirements[0].name)
+        self.assertEqual('local', resource.requirements[0].type)
+        self.assertEqual((22,50), resource.requirements[0].insert_location)
+
     @staticmethod
     def create_test_files(paths_to_files):
         if isinstance(paths_to_files, basestring):

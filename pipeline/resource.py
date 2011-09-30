@@ -57,8 +57,10 @@ class Resource:
         if self._file_type == 'javascript':
             require_re = re.compile(r'\s*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*')
         else: # 'css'
-            require_re = re.compile(r'\@import url\("(\S+)"\)')
+            require_re = re.compile(r'\@import url\((")(\S+)"\)')
 
+        # This loop expects each match to have 2 groups. The first group captures the
+        # punctuation mark around the file name and the second captures the name itself
         for result in require_re.finditer(self._content):
             if result.groups()[0] == '<':
                 type = 'global'
