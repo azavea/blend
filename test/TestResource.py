@@ -73,6 +73,7 @@ class TestResource(unittest.TestCase):
 
     def testExistsProperty(self):
         pathsToTestFiles = ['/tmp/test.js']
+        TestResource.cleanUpTestFiles(pathsToTestFiles)
         resource = Resource(pathsToTestFiles[0])
         # file does not exist yet
         self.assertFalse(resource.exists)
