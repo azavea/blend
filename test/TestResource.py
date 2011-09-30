@@ -104,6 +104,22 @@ class TestResource(unittest.TestCase):
         self.assertEqual(None, resource.requirements)
         TestResource.clean_up_test_files(path_to_test_file)
 
+    def test_javascript_requirements_are_found(self):
+        path_to_test_file = '/tmp/test.js'
+        TestResource.clean_up_test_files(path_to_test_file)
+        content = '//= require <jquery>\nvar foo = {};//= require "openlayers"\n var s = "some other thing"\n'
+        TestResource.create_test_file_with_content(path_to_test_file, content)
+        resource = Resource(path_to_test_file)
+        self.assertTrue(resource.content == content)
+        self.assertEqual(2, len(resource.requirements))
+        self.assertEqual('jquery', resource.requirements[0].name)
+        self.assertEqual('global', resource.requirements[0].type)
+        self.assertEqual((0,20), resource.requirements[0].insert_location)
+        self.assertEqual('openlayers', resource.requirements[1].name)
+        self.assertEqual('local', resource.requirements[1].type)
+        self.assertEqual((34,58), resource.requirements[1].insert_location)
+        TestResource.clean_up_test_files(path_to_test_file)
+
     @staticmethod
     def create_test_files(paths_to_files):
         if isinstance(paths_to_files, basestring):
