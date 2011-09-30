@@ -8,8 +8,9 @@ class TestRequirement(unittest.TestCase):
         self.assertRaises(Exception, Requirement)
         self.assertRaises(Exception, Requirement, 'name but not type')
         self.assertRaises(Exception, Requirement, None, None)
-        # This call to the constructor should not raise an exception
-        Requirement('name', 'local')
+        requirement = Requirement('name', 'local')
+        self.assertEqual('name', requirement.name)
+        self.assertEqual('local', requirement.type)
 
     def test_requirement_name_must_be_a_string(self):
         self.assertRaises(Exception, Requirement, 1, 'local')
