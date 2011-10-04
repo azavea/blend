@@ -10,3 +10,6 @@ class TestPipeline(unittest.TestCase):
         
     def test_pipeline_has_a_requirement_class(self):
         inspect.isclass(Requirement)
+
+    def test_pipeline_has_an_environment_class(self):
+        inspect.isclass(Environment)
