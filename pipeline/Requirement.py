@@ -7,6 +7,10 @@ class Requirement:
         Arguments:
         name -- The string name of the required resource
         type -- Where to search for the required resource. Can be local or global
+        insert_location -- The character position within the content where the required
+        resource will be inserted during a merge. Can be either a single integer for
+        inserting without replacement or a tuple defining the character range in the
+        requiring resource that will be replaced by the content of the required resource.
         """
         if not name:
             raise Exception('Requirement must be created with a name')
@@ -43,6 +47,9 @@ class Requirement:
     @property
     def insert_location(self):
         """
-        The descriptions of the the other resources that this resource depends on
+        The character position within the content where the required resource will be
+        inserted during a merge. Can be either a single integer for inserting without
+        replacement or a tuple defining the character range in the requiring resource
+        that will be replaced by the content of the required resource.
         """
         return self._insert_location

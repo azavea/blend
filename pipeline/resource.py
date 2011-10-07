@@ -45,9 +45,9 @@ class Resource:
     def _set_requirements(self):
         """
         Parse the content of the file and set the _requirements member variable to a
-        list containing any requirements as Requirement objects.
+        list Requirement objects.
         Remarks:
-        Must be called AFTER _set_content() is called and self._file_type is set.
+        Must be called AFTER _set_content() is called and after self._file_type is set.
         """
         self._requirements = None
 
@@ -121,21 +121,21 @@ class Resource:
     @property
     def exists(self):
         """
-        Whether or not the file exists on disk
+        Whether or not the file represented by the Resource exists on disk.
         """
         return os.path.exists(self.path_to_file)
 
     @property
     def content(self):
         """
-        The contents of the file
+        The contents of the file.
         """
         return self._content
 
     @property
     def extension(self):
         """
-        The file name extension of the physical file in lower case without the '.' character
+        The file name extension of the physical file in lower case without the '.' character.
         """
         return self._extension
 
@@ -143,21 +143,23 @@ class Resource:
     def file_type(self):
         """
         A lower case string describing the content of this file.
-        Possible values: unknown, javascript
+        Possible values: unknown, javascript, css.
         """
         return self._file_type
 
     @property
     def base_name(self):
         """
-        The name of the resource with version numbers and minification designations removed/
+        The name of the resource with version numbers and minification designations removed.
+        Example: OpenLayers.js -> openlayers
+        Example: jQuery-1.5.4-min.js -> jquery
         """
         return self._base_name
 
     @property
     def requirements(self):
         """
-        The descriptions of the the other resources that this resource depends on
+        The descriptions of the the other resources on which this resource depends.
         """
         return self._requirements
 
@@ -176,11 +178,11 @@ class Resource:
     @staticmethod
     def find_all_of_type_in_path(file_type, path):
         """
-        Get a list of Resource instances representing all the files in the current working
+        Get a list of Resource instances representing all the files in the specified
         directory that have the specified file_type
         Arguments:
-        file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css
-        path -- The base directory to be recursively searching for files
+        file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css.
+        path -- The base directory to be recursively searched for files.
         """
         resources = []
         for dir_path, dir_names, file_names in os.walk(path):
