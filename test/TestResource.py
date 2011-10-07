@@ -25,7 +25,7 @@ class TestResource(unittest.TestCase):
 
     def test_resource_has_an_extension_property(self):
         test_file_names_and_expected_extensions = [
-            ('/var/someFile.js',            'js'),
+            ('/var/someFile.js',       'js'),
             ('someFile.JS',            'js'),
             ('noExtension',            ''),
             ('someFile.SomECraZytype', 'somecrazytype')]
@@ -51,10 +51,10 @@ class TestResource(unittest.TestCase):
 
     def test_resource_has_a_base_name_property(self):
         test_file_paths_and_expected_base_names = [
-            ('/usr/local/file.js', 'file'),
-            ('FILE.JS', 'file'),
+            ('/usr/local/file.js',       'file'),
+            ('FILE.JS',                  'file'),
             ('some-Plugin-2.3.2-min.js', 'some-plugin'),
-            ('jQuery-1.2.3.js', 'jquery')]
+            ('jQuery-1.2.3.js',          'jquery')]
         for test_file_path, expected_base_name in test_file_paths_and_expected_base_names:
             resource = Resource(test_file_path)
             self.assertEqual(expected_base_name, resource.base_name, 'Expected the base_name of "' +
