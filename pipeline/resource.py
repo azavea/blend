@@ -2,6 +2,7 @@ import os
 import re
 
 from Requirement import Requirement
+from Environment import Environment
 
 class Resource:
     """
@@ -164,22 +165,26 @@ class Resource:
         return self._requirements
 
     @staticmethod
-    def find_all_of_type(file_type):
+    def find_all_of_type_in_environment(file_type, environment):
         """
         Get a list of Resource instances representing all the files in the current working
         directory that have the specified file_type
         Arguments:
         file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css
+        environment -- An Environment instance defining where to search for files.
         Remarks:
-        Calls find_all_of_type_in_path passing the specified file_type and '.' as the path argument.
+        Calls find_all_of_type_in_path for each path in the environment.
         """
-        return Resource.find_all_of_type_in_path(file_type, '.')
+        resources = []
+        for path in environment.paths:
+            resources.extend(Resource._find_all_of_type_in_path(file_type, path))
+        return resources if len(resources) > 0 else None
 
     @staticmethod
-    def find_all_of_type_in_path(file_type, path):
+    def _find_all_of_type_in_path(file_type, path):
         """
         Get a list of Resource instances representing all the files in the specified
-        directory that have the specified file_type
+        directory (and sub-directories) that have the specified file_type
         Arguments:
         file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css.
         path -- The base directory to be recursively searched for files.

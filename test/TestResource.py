@@ -1,7 +1,8 @@
 import unittest
 import os
+import shutil
 
-from pipeline import Resource
+from pipeline import Resource, Environment
 
 class TestResource(unittest.TestCase):
     """Asserts that the properties and methods of the Resource class behave correctly."""
@@ -59,19 +60,31 @@ class TestResource(unittest.TestCase):
             self.assertEqual(expected_base_name, resource.base_name, 'Expected the base_name of "' +
                 test_file_path + '" to be "'+ expected_base_name + '" and not "' + resource.base_name + '"')
 
-    def test_find_all_javascript_resources(self):
+    def test_find_all_javascript_resources_in_the_default_environment(self):
         paths_to_test_files = ['test.js', 'test.css', 'test.html']
         TestResource.create_test_files(paths_to_test_files)
-        resources = Resource.find_all_of_type('javascript')
+        resources = Resource.find_all_of_type_in_environment('javascript', Environment())
         TestResource.clean_up_test_files(paths_to_test_files)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
 
-    def test_find_all_javascript_resources_in_a_path(self):
+    def test_find_all_javascript_resources_in_an_environment(self):
         paths_to_test_files = ['/tmp/subdir/test.js', '/tmp/test.css', '/tmp/test.html']
+        test_env = Environment('/tmp', include_cwd=False)
         TestResource.create_test_files(paths_to_test_files)
-        resources = Resource.find_all_of_type_in_path('javascript', '/tmp')
+        resources = Resource.find_all_of_type_in_environment('javascript', test_env)
         TestResource.clean_up_test_files(paths_to_test_files)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
+        self.assertEqual(os.path.join('/','tmp','subdir', 'test.js'), resources[0].path_to_file)
+
+    def test_search_for_javascript_resources_in_an_environment_without_any_returns_none(self):
+        test_dir = '/tmp/only_css'
+        test_env = Environment(test_dir, include_cwd=False)
+        if os.path.exists(test_dir):
+            shutil.rmtree(test_dir)
+        path_to_test_file = '/tmp/only_css/test.css'
+        TestResource.create_test_files(path_to_test_file)
+        resources = Resource.find_all_of_type_in_environment('javascript', test_env)
+        self.assertEquals(None, resources)
 
     def test_exists_property(self):
         path_to_test_file = '/tmp/test.js'
