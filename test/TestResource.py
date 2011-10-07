@@ -150,6 +150,22 @@ class TestResource(unittest.TestCase):
         self.assertEqual('local', resource.requirements[0].type)
         self.assertEqual((22,50), resource.requirements[0].insert_location)
 
+    def test_merge_requirements_in_global_path(self):
+        paths_to_test_files = ['/tmp/dir1/file1.js', '/tmp/dir2/file2.js', '/tmp/output/result.js']
+        TestResource.clean_up_test_files(paths_to_test_files)
+        TestResource.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require <file2>')
+        TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2')
+        file1_resource = Resource(paths_to_test_files[0])
+        file1_resource.merge_requirements_from_environemnt(Environment('/tmp', include_cwd=False), paths_to_test_files[2])
+        self.assertTrue(os.path.exists(paths_to_test_files[2]))
+        f = open(paths_to_test_files[2], 'r')
+        try:
+            actual_merged_content = f.read()
+            self.assertTrue('// This is file 1\n// This is file 2', actual_merged_content)
+        finally:
+            f.close()
+        TestResource.clean_up_test_files(paths_to_test_files)
+
     @staticmethod
     def create_test_files(paths_to_files):
         if isinstance(paths_to_files, basestring):

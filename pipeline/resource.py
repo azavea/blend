@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 
 from Requirement import Requirement
 from Environment import Environment
@@ -163,6 +164,24 @@ class Resource:
         The descriptions of the the other resources on which this resource depends.
         """
         return self._requirements
+
+    def merge_requirements_from_environemnt(self, environment, output_file_path):
+        merged_content = ''.join(self.content) # Get a copy of the content string
+        if os.path.dirname(output_file_path) != '' and not os.path.exists(os.path.dirname(output_file_path)):
+            os.makedirs(os.path.dirname(output_file_path))
+        if self.requirements:
+            for requirement in self.requirements:
+                for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
+                    if resource.base_name == requirement.name:
+                        merged_content = merged_content[:requirement.insert_location[0]+1] + resource.content + merged_content[requirement.insert_location[1]:]
+                        break
+            f = open(output_file_path, 'w')
+            try:
+                f.write(merged_content)
+            finally:
+                f.close()
+        else:
+            shutil.copyfile(self.path_to_file, output_file_path)
 
     @staticmethod
     def find_all_of_type_in_environment(file_type, environment):
