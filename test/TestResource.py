@@ -68,13 +68,16 @@ class TestResource(unittest.TestCase):
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
 
     def test_find_all_javascript_resources_in_an_environment(self):
-        paths_to_test_files = ['/tmp/subdir/test.js', '/tmp/test.css', '/tmp/test.html']
-        test_env = Environment('/tmp', include_cwd=False)
+        test_dir = '/tmp/single_js'
+        if os.path.exists(test_dir):
+            shutil.rmtree(test_dir)
+        paths_to_test_files = [test_dir + '/subdir/test.js',test_dir +  '/test.css', test_dir + '/test.html']
+        test_env = Environment(test_dir, include_cwd=False)
         TestResource.create_test_files(paths_to_test_files)
         resources = Resource.find_all_of_type_in_environment('javascript', test_env)
         TestResource.clean_up_test_files(paths_to_test_files)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
-        self.assertEqual(os.path.join('/','tmp','subdir', 'test.js'), resources[0].path_to_file)
+        self.assertEqual(os.path.join('/','tmp/single_js', 'subdir', 'test.js'), resources[0].path_to_file)
 
     def test_search_for_javascript_resources_in_an_environment_without_any_returns_none(self):
         test_dir = '/tmp/only_css'
