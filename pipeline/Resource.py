@@ -215,3 +215,23 @@ class Resource:
                 if resource.file_type == file_type:
                     resources.append(resource)
         return resources
+
+    @staticmethod
+    def find_all_in_environment(environment):
+        """
+        Get a list of Resource instances representing all the files in the specified
+        environment that have a processable file type.
+        Arguments:
+        environment -- An Environment instance defining where to search for files.
+        """
+        resources = []
+        for path in environment.paths:
+            resources_in_path = []
+            for dir_path, dir_names, file_names in os.walk(path):
+                for file_name in file_names:
+                    absolute_file_path = os.path.join(dir_path, file_name)
+                    ext, file_type = Resource._parse_extension_and_file_type(absolute_file_path)
+                    if file_type != 'unknown':
+                        resources_in_path.append(Resource(absolute_file_path))
+            resources.extend(resources_in_path)
+        return resources if len(resources) > 0 else None

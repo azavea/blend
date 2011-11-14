@@ -174,6 +174,24 @@ class TestResource(unittest.TestCase):
             f.close()
         TestResource.clean_up_test_files(paths_to_test_files)
 
+    def test_find_all_in_environment(self):
+        paths_to_processable_test_files = [
+            os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
+            os.path.join(self.test_env_dir, 'dir2', 'file2.css')]
+
+        paths_to_unprocessable_test_files = [
+            os.path.join(self.test_env_dir, 'dir1', 'movie.avi'),
+            os.path.join(self.test_env_dir, 'some.other.thing')]
+
+        TestResource.create_test_files(paths_to_processable_test_files)
+        TestResource.create_test_files(paths_to_unprocessable_test_files)
+
+        resources = Resource.find_all_in_environment(Environment(self.test_env_dir, include_cwd=False))
+
+        self.assertEquals(2, len(resources))
+        self.assertEqual(paths_to_processable_test_files[0], resources[0].path_to_file)
+        self.assertEqual(paths_to_processable_test_files[1], resources[1].path_to_file)
+
     @staticmethod
     def create_test_files(paths_to_files):
         if isinstance(paths_to_files, basestring):
