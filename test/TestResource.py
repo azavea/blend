@@ -136,10 +136,10 @@ class TestResource(unittest.TestCase):
         self.assertEqual(2, len(resource.requirements))
         self.assertEqual('jquery', resource.requirements[0].name)
         self.assertEqual('global', resource.requirements[0].type)
-        self.assertEqual((0,20), resource.requirements[0].insert_location)
+        self.assertEqual((0,21), resource.requirements[0].insert_location)
         self.assertEqual('openlayers', resource.requirements[1].name)
         self.assertEqual('local', resource.requirements[1].type)
-        self.assertEqual((34,58), resource.requirements[1].insert_location)
+        self.assertEqual((34,59), resource.requirements[1].insert_location)
         TestResource.clean_up_test_files(path_to_test_file)
 
     def test_css_import_statements_found_as_requirements(self):

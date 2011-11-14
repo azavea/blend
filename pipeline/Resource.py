@@ -57,7 +57,7 @@ class Resource:
             return
 
         if self._file_type == 'javascript':
-            require_re = re.compile(r'\s*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*')
+            require_re = re.compile(r'[ \t]*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*\n{0,1}')
         else: # 'css'
             require_re = re.compile(r'\@import url\((")(\S+)"\)')
 
@@ -170,10 +170,15 @@ class Resource:
         if os.path.dirname(output_file_path) != '' and not os.path.exists(os.path.dirname(output_file_path)):
             os.makedirs(os.path.dirname(output_file_path))
         if self.requirements:
-            for requirement in self.requirements:
+            # The requirements are parsed out of the file in order from top to bottom. If
+            # you also merge the requirements in that order, the insert position of the second
+            # requirement will be throw off by the merging of the first. Iterating over the list
+            # in reverse order ensures merging multiple files into the same target will work correctly.
+            for requirement in reversed(self.requirements):
                 for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
                     if resource.base_name == requirement.name.lower():
-                        merged_content = merged_content[:requirement.insert_location[0]+1] + resource.content + merged_content[requirement.insert_location[1]:]
+                        merged_content = merged_content[:requirement.insert_location[0]]  + resource.content + \
+                            merged_content[requirement.insert_location[1]:]
                         break
             f = open(output_file_path, 'w')
             try:
