@@ -53,7 +53,7 @@ class Resource:
         """
         self._requirements = None
 
-        if self._file_type == 'unknown' or self._content == None:
+        if self._file_type == 'unknown' or self._content is None:
             return
 
         if self._file_type == 'javascript':
