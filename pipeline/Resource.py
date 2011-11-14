@@ -172,7 +172,7 @@ class Resource:
         if self.requirements:
             for requirement in self.requirements:
                 for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
-                    if resource.base_name == requirement.name:
+                    if resource.base_name == requirement.name.lower():
                         merged_content = merged_content[:requirement.insert_location[0]+1] + resource.content + merged_content[requirement.insert_location[1]:]
                         break
             f = open(output_file_path, 'w')
