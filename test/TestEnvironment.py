@@ -20,3 +20,7 @@ class TestEnvironment(unittest.TestCase):
     def test_cwd_can_be_omitted_from_paths(self):
         env = Environment('/tmp/test', '/tmp/lib', include_cwd = False)
         self.assertEqual(['/tmp/test', '/tmp/lib'], env.paths)
+
+    def test_creating_with_none_results_in_cwd_as_the_only_path(self):
+        env = Environment(None)
+        self.assertEqual([os.getcwd()], env.paths)
