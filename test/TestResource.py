@@ -1,11 +1,18 @@
 import unittest
 import os
 import shutil
+import tempfile
 
 from pipeline import Resource, Environment
 
 class TestResource(unittest.TestCase):
     """Asserts that the properties and methods of the Resource class behave correctly."""
+
+    def setUp(self):
+        self.test_env_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.test_env_dir)
 
     def test_resource_must_be_created_with_path_to_file(self):
         self.assertRaises(Exception, Resource)
@@ -61,37 +68,33 @@ class TestResource(unittest.TestCase):
                 test_file_path + '" to be "'+ expected_base_name + '" and not "' + resource.base_name + '"')
 
     def test_find_all_javascript_resources_in_the_default_environment(self):
-        paths_to_test_files = ['test.js', 'test.css', 'test.html']
+        paths_to_test_files = [os.path.join(self.test_env_dir, 'test.js'), os.path.join(self.test_env_dir, 'test.css'),
+            os.path.join(self.test_env_dir, 'test.html')]
         TestResource.create_test_files(paths_to_test_files)
-        resources = Resource.find_all_of_type_in_environment('javascript', Environment())
+        resources = Resource.find_all_of_type_in_environment('javascript', Environment(self.test_env_dir))
         TestResource.clean_up_test_files(paths_to_test_files)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
 
     def test_find_all_javascript_resources_in_an_environment(self):
-        test_dir = '/tmp/pipeline/single_js'
-        if os.path.exists(test_dir):
-            shutil.rmtree(test_dir)
-        paths_to_test_files = [test_dir + '/subdir/test.js',test_dir +  '/test.css', test_dir + '/test.html']
-        test_env = Environment(test_dir, include_cwd=False)
+        paths_to_test_files = [os.path.join(self.test_env_dir, 'subdir', 'test.js'),
+            os.path.join(self.test_env_dir, 'test.css'), os.path.join(self.test_env_dir, 'test.html')]
+        test_env = Environment(self.test_env_dir, include_cwd=False)
         TestResource.create_test_files(paths_to_test_files)
         resources = Resource.find_all_of_type_in_environment('javascript', test_env)
         TestResource.clean_up_test_files(paths_to_test_files)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
-        self.assertEqual(os.path.join('/','tmp', 'pipeline', 'single_js', 'subdir', 'test.js'),
+        self.assertEqual(os.path.join(self.test_env_dir, 'subdir', 'test.js'),
             resources[0].path_to_file)
 
     def test_search_for_javascript_resources_in_an_environment_without_any_returns_none(self):
-        test_dir = '/tmp/pipeline/only_css'
-        test_env = Environment(test_dir, include_cwd=False)
-        if os.path.exists(test_dir):
-            shutil.rmtree(test_dir)
-        path_to_test_file = '/tmp/pipeline/only_css/test.css'
+        test_env = Environment(self.test_env_dir, include_cwd=False)
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.css')
         TestResource.create_test_files(path_to_test_file)
         resources = Resource.find_all_of_type_in_environment('javascript', test_env)
         self.assertEquals(None, resources)
 
     def test_exists_property(self):
-        path_to_test_file = '/tmp/pipeline/test.js'
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.js')
         TestResource.clean_up_test_files(path_to_test_file)
         resource = Resource(path_to_test_file)
         # file does not exist yet
@@ -101,7 +104,7 @@ class TestResource(unittest.TestCase):
         TestResource.clean_up_test_files(path_to_test_file)
 
     def test_content_property(self):
-        path_to_test_file = '/tmp/pipeline/test.js'
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.js')
         content = 'var foo = {};'
         TestResource.create_test_file_with_content(path_to_test_file, content)
         resource = Resource(path_to_test_file)
@@ -114,7 +117,7 @@ class TestResource(unittest.TestCase):
         self.assertEqual(None, resource.requirements)
 
     def test_requirements_property_for_resource_with_plain_content_is_none(self):
-        path_to_test_file = '/tmp/pipeline/test.js'
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.js')
         TestResource.clean_up_test_files(path_to_test_file)
         content = 'var foo = {};'
         TestResource.create_test_file_with_content(path_to_test_file, content)
@@ -124,7 +127,7 @@ class TestResource(unittest.TestCase):
         TestResource.clean_up_test_files(path_to_test_file)
 
     def test_javascript_requirements_are_found(self):
-        path_to_test_file = '/tmp/pipeline/test.js'
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.js')
         TestResource.clean_up_test_files(path_to_test_file)
         content = '//= require <jquery>\nvar foo = {};//= require "openlayers"\n var s = "some other thing"\n'
         TestResource.create_test_file_with_content(path_to_test_file, content)
@@ -140,7 +143,7 @@ class TestResource(unittest.TestCase):
         TestResource.clean_up_test_files(path_to_test_file)
 
     def test_css_import_statements_found_as_requirements(self):
-        path_to_test_file = '/tmp/pipline/test.css'
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.css')
         TestResource.clean_up_test_files(path_to_test_file)
         content = 'h1 {background:red;}\n @import url("something.css")'
         TestResource.create_test_file_with_content(path_to_test_file, content)
@@ -152,14 +155,16 @@ class TestResource(unittest.TestCase):
         self.assertEqual((22,50), resource.requirements[0].insert_location)
 
     def test_merge_requirements_in_global_path(self):
-        paths_to_test_files = ['/tmp/pipeline/dir1/file1.js', '/tmp/pipeline/dir2/file2.js',
-            '/tmp/pipeline/output/result.js']
+        paths_to_test_files = [
+            os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
+            os.path.join(self.test_env_dir, 'dir2', 'file2.js'),
+            os.path.join(self.test_env_dir, 'output', 'result.js')]
         TestResource.clean_up_test_files(paths_to_test_files)
         TestResource.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require <file2>')
         TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2')
         file1_resource = Resource(paths_to_test_files[0])
-        file1_resource.merge_requirements_from_environemnt(Environment('/tmp/pipeline', include_cwd=False),
-            paths_to_test_files[2])
+        file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir,
+            include_cwd=False), paths_to_test_files[2])
         self.assertTrue(os.path.exists(paths_to_test_files[2]))
         f = open(paths_to_test_files[2], 'r')
         try:
