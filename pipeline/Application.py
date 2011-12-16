@@ -30,8 +30,12 @@ class Application():
                 for resource in resources:
                     if resource.requirements is not None:
                         directory, file_name = os.path.split(resource.path_to_file)
-                        resource.merge_requirements_from_environemnt(self.environment,
-                            os.path.join(self.output_dir, file_name))
+                        merged_content = resource.merge_requirements_from_environemnt(self.environment)
+                        f = open(os.path.join(self.output_dir, file_name), 'w')
+                        try:
+                            f.write(merged_content)
+                        finally:
+                            f.close()
         except Exception:
             traceback.print_exc(file=sys.stderr)
             return -1

@@ -157,21 +157,30 @@ class TestResource(unittest.TestCase):
     def test_merge_requirements_in_global_path(self):
         paths_to_test_files = [
             os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
-            os.path.join(self.test_env_dir, 'dir2', 'file2.js'),
-            os.path.join(self.test_env_dir, 'output', 'result.js')]
+            os.path.join(self.test_env_dir, 'dir2', 'file2.js')]
         TestResource.clean_up_test_files(paths_to_test_files)
         TestResource.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require <FILE2>')
         TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2')
         file1_resource = Resource(paths_to_test_files[0])
-        file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir,
-            include_cwd=False), paths_to_test_files[2])
-        self.assertTrue(os.path.exists(paths_to_test_files[2]))
-        f = open(paths_to_test_files[2], 'r')
-        try:
-            actual_merged_content = f.read()
-            self.assertEqual('// This is file 1\n// This is file 2', actual_merged_content)
-        finally:
-            f.close()
+        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir,
+            include_cwd=False))
+
+        self.assertEqual('// This is file 1\n// This is file 2', actual_merged_content)
+
+        TestResource.clean_up_test_files(paths_to_test_files)
+
+    def test_merge_recusive_requirements_in_global_path(self):
+        paths_to_test_files = [
+                os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
+                os.path.join(self.test_env_dir, 'dir2', 'file2.js'),
+                os.path.join(self.test_env_dir, 'dir3', 'file3.js')]
+        TestResource.clean_up_test_files(paths_to_test_files)
+        TestResource.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require <FILE2>')
+        TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2\n//= require <file3>')
+        TestResource.create_test_file_with_content(paths_to_test_files[2], '// This is file 3')
+        file1_resource = Resource(paths_to_test_files[0])
+        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir, include_cwd=False))
+        self.assertEqual('// This is file 1\n// This is file 2\n// This is file 3', actual_merged_content)
         TestResource.clean_up_test_files(paths_to_test_files)
 
     def test_find_all_in_environment(self):

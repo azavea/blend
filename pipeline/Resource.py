@@ -165,11 +165,9 @@ class Resource:
         """
         return self._requirements
 
-    def merge_requirements_from_environemnt(self, environment, output_file_path):
-        merged_content = ''.join(self.content) # Get a copy of the content string
-        if os.path.dirname(output_file_path) != '' and not os.path.exists(os.path.dirname(output_file_path)):
-            os.makedirs(os.path.dirname(output_file_path))
+    def merge_requirements_from_environemnt(self, environment):
         if self.requirements:
+            merged_content = ''.join(self.content) # Get a copy of the content string
             # The requirements are parsed out of the file in order from top to bottom. If
             # you also merge the requirements in that order, the insert position of the second
             # requirement will be throw off by the merging of the first. Iterating over the list
@@ -177,16 +175,13 @@ class Resource:
             for requirement in reversed(self.requirements):
                 for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
                     if resource.base_name == requirement.name.lower():
-                        merged_content = merged_content[:requirement.insert_location[0]]  + resource.content + \
-                            merged_content[requirement.insert_location[1]:]
+                        merged_content = merged_content[:requirement.insert_location[0]] + \
+                                         resource.merge_requirements_from_environemnt(environment) + \
+                                         merged_content[requirement.insert_location[1]:]
                         break
-            f = open(output_file_path, 'w')
-            try:
-                f.write(merged_content)
-            finally:
-                f.close()
+            return merged_content
         else:
-            shutil.copyfile(self.path_to_file, output_file_path)
+            return self.content
 
     @staticmethod
     def find_all_of_type_in_environment(file_type, environment):
