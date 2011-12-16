@@ -174,7 +174,7 @@ class Resource:
             # in reverse order ensures merging multiple files into the same target will work correctly.
             for requirement in reversed(self.requirements):
                 for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
-                    if resource.base_name == requirement.name.lower():
+                    if resource.base_name == requirement.standard_name:
                         merged_content = merged_content[:requirement.insert_location[0]] + \
                                          resource.merge_requirements_from_environemnt(environment) + \
                                          merged_content[requirement.insert_location[1]:]

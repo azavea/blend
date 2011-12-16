@@ -38,6 +38,13 @@ class Requirement:
         return self._name
 
     @property
+    def standard_name(self):
+        """
+        The lowercase name of the required resource
+        """
+        return self._name.lower()
+
+    @property
     def type(self):
         """
         Where to search for the required resource. Can be local or global
