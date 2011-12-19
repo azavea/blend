@@ -183,6 +183,23 @@ class TestResource(unittest.TestCase):
         self.assertEqual('// This is file 1\n// This is file 2\n// This is file 3', actual_merged_content)
         TestResource.clean_up_test_files(paths_to_test_files)
 
+    def test_merge_from_global_path_does_not_add_requirements_twice(self):
+        paths_to_test_files = [
+            os.path.join(self.test_env_dir, 'dir11', 'file1.js'),
+            os.path.join(self.test_env_dir, 'dir21', 'file2.js'),
+            os.path.join(self.test_env_dir, 'dir31', 'file3.js'),
+            os.path.join(self.test_env_dir, 'dir41', 'file4.js')]
+        TestResource.clean_up_test_files(paths_to_test_files)
+        TestResource.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require <file2>\n//= require <file3>')
+        TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2\n//= require <file4>')
+        TestResource.create_test_file_with_content(paths_to_test_files[2], '// This is file 3\n//= require <file4>')
+        TestResource.create_test_file_with_content(paths_to_test_files[3], '// This is file 4\n')
+
+        file1_resource = Resource(paths_to_test_files[0])
+        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir, include_cwd=False))
+        self.assertEqual('// This is file 1\n// This is file 2\n// This is file 3\n// This is file 4\n', actual_merged_content)
+        TestResource.clean_up_test_files(paths_to_test_files)
+
     def test_find_all_in_environment(self):
         paths_to_processable_test_files = [
             os.path.join(self.test_env_dir, 'dir1', 'file1.js'),

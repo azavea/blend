@@ -1,5 +1,6 @@
 import os
 import re
+from copy import deepcopy
 import shutil
 
 from Requirement import Requirement
@@ -165,23 +166,47 @@ class Resource:
         """
         return self._requirements
 
-    def merge_requirements_from_environemnt(self, environment):
+    def merge_requirements_from_environemnt(self, environment, previously_merged=[]):
         if self.requirements:
+            map = self.map_requirements(environment)
+
             merged_content = ''.join(self.content) # Get a copy of the content string
             # The requirements are parsed out of the file in order from top to bottom. If
             # you also merge the requirements in that order, the insert position of the second
             # requirement will be throw off by the merging of the first. Iterating over the list
             # in reverse order ensures merging multiple files into the same target will work correctly.
             for requirement in reversed(self.requirements):
-                for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
-                    if resource.base_name == requirement.standard_name:
-                        merged_content = merged_content[:requirement.insert_location[0]] + \
-                                         resource.merge_requirements_from_environemnt(environment) + \
-                                         merged_content[requirement.insert_location[1]:]
-                        break
+                resource = map[requirement.standard_name]['resource']
+                if resource.base_name not in previously_merged:
+                    merged_content = merged_content[:requirement.insert_location[0]] + \
+                                     resource.merge_requirements_from_environemnt(environment, previously_merged) + \
+                                     merged_content[requirement.insert_location[1]:]
+                else:
+                    merged_content = merged_content[:requirement.insert_location[0]] +\
+                                     merged_content[requirement.insert_location[1]:]
+                previously_merged.append(resource.base_name)
+
             return merged_content
         else:
             return self.content
+
+    def map_requirements(self, environment, map={}, previously_required=[]):
+        if self.requirements:
+            for requirement in self.requirements:
+                map[requirement.standard_name] = None
+                for resource in Resource.find_all_of_type_in_environment(self.file_type, environment):
+                    if resource.base_name == requirement.standard_name:
+                        new_previously_required = deepcopy(previously_required)
+                        new_previously_required.append(requirement.standard_name)
+                        resource.map_requirements(environment, map, new_previously_required)
+
+                        map[requirement.standard_name] = {
+                            'resource': resource,
+                            'previously_required': deepcopy(previously_required)
+                        }
+        return map
+
+
 
     @staticmethod
     def find_all_of_type_in_environment(file_type, environment):
