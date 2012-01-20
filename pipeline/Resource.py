@@ -60,16 +60,26 @@ class Resource:
         if self._file_type == 'javascript':
             require_re = re.compile(r'[ \t]*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*\n{0,1}')
         else: # 'css'
-            require_re = re.compile(r'\@import url\((")(\S+)\.\S+"\)')
+            require_re = re.compile(r'\@import url\((?P<import_punc>")(?P<import_match>\S+)\.\S+"\)|[ \t]*/\*=[ \t]+require[ \t]+(?P<require_punc>[<"])(?P<require_match>\S+)[>"][ \t]*\*/\n{0,1}')
 
         # This loop expects each match to have 2 groups. The first group captures the
         # punctuation mark around the file name and the second captures the name itself
         for result in require_re.finditer(self._content):
-            if result.groups()[0] == '<':
+            if self._file_type == 'javascript':
+                punc = result.groups()[0]
+                name = str(result.groups()[1])
+            else:
+                punc = result.group('import_punc') or result.group('require_punc')
+                if result.group('import_match') is not None:
+                    name = str(result.group('import_match'))
+                else:
+                    name = str(result.group('require_match'))
+
+            if punc == '<':
                 type = 'global'
             else:
                 type = 'local'
-            name = str(result.groups()[1])
+
             insert_position = (result.start(), result.end())
             if self._requirements is None:
                 self._requirements = []

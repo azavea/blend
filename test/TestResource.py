@@ -154,9 +154,21 @@ class TestResource(unittest.TestCase):
         resource = Resource(path_to_test_file)
         self.assertTrue(resource.content == content)
         self.assertEqual(1, len(resource.requirements))
-        self.assertEqual('something.css', resource.requirements[0].name)
+        self.assertEqual('something', resource.requirements[0].name)
         self.assertEqual('local', resource.requirements[0].type)
         self.assertEqual((22,50), resource.requirements[0].insert_location)
+
+    def test_css_require_comments_found_as_requirements(self):
+        path_to_test_file = os.path.join(self.test_env_dir, 'test.css')
+        TestResource.clean_up_test_files(path_to_test_file)
+        content = 'h1 {background:red;}\n /*= require "something"  */'
+        TestResource.create_test_file_with_content(path_to_test_file, content)
+        resource = Resource(path_to_test_file)
+        self.assertTrue(resource.content == content)
+        self.assertEqual(1, len(resource.requirements))
+        self.assertEqual('something', resource.requirements[0].name)
+        self.assertEqual('local', resource.requirements[0].type)
+        self.assertEqual((21,49), resource.requirements[0].insert_location)
 
     def test_merge_requirements_in_global_path(self):
         paths_to_test_files = [
