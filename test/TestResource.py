@@ -202,7 +202,7 @@ class TestResource(unittest.TestCase):
         self.assertRaises(RequirementNotSatisfiedException, file1_resource.merge_requirements_from_environemnt,
             Environment(self.test_env_dir, include_cwd=False), previously_merged=[])
 
-    def test_merge_recusive_requirements_in_global_path(self):
+    def test_merge_recursive_requirements_in_global_path(self):
         paths_to_test_files = [
                 os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
                 os.path.join(self.test_env_dir, 'dir2', 'file2.js'),
