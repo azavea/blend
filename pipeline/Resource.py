@@ -166,9 +166,9 @@ class Resource:
         """
         return self._requirements
 
-    def merge_requirements_from_environemnt(self, environment, previously_merged=[]):
+    def merge_requirements_from_environemnt(self, environment, previously_merged):
         if self.requirements:
-            map = self.map_requirements(environment)
+            map = self.map_requirements(environment, map={}, previously_required=[])
 
             merged_content = ''.join(self.content) # Get a copy of the content string
             # The requirements are parsed out of the file in order from top to bottom. If
@@ -190,7 +190,7 @@ class Resource:
         else:
             return self.content
 
-    def map_requirements(self, environment, map={}, previously_required=[]):
+    def map_requirements(self, environment, map, previously_required):
         if self.requirements:
             for requirement in self.requirements:
                 map[requirement.standard_name] = None

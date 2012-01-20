@@ -166,7 +166,7 @@ class TestResource(unittest.TestCase):
         TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2')
         file1_resource = Resource(paths_to_test_files[0])
         actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir,
-            include_cwd=False))
+            include_cwd=False), previously_merged=[])
 
         self.assertEqual('// This is file 1\n// This is file 2', actual_merged_content)
 
@@ -182,7 +182,7 @@ class TestResource(unittest.TestCase):
         TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is file 2\n//= require <file3>')
         TestResource.create_test_file_with_content(paths_to_test_files[2], '// This is file 3')
         file1_resource = Resource(paths_to_test_files[0])
-        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir, include_cwd=False))
+        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir, include_cwd=False), previously_merged=[])
         self.assertEqual('// This is file 1\n// This is file 2\n// This is file 3', actual_merged_content)
         TestResource.clean_up_test_files(paths_to_test_files)
 
@@ -199,7 +199,7 @@ class TestResource(unittest.TestCase):
         TestResource.create_test_file_with_content(paths_to_test_files[3], '// This is file 4\n')
 
         file1_resource = Resource(paths_to_test_files[0])
-        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir, include_cwd=False))
+        actual_merged_content = file1_resource.merge_requirements_from_environemnt(Environment(self.test_env_dir, include_cwd=False), previously_merged=[])
         self.assertEqual('// This is file 1\n// This is file 2\n// This is file 3\n// This is file 4\n', actual_merged_content)
         TestResource.clean_up_test_files(paths_to_test_files)
 
