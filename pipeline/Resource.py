@@ -166,7 +166,7 @@ class Resource:
         """
         return self._requirements
 
-    def merge_requirements_from_environemnt(self, environment, previously_merged):
+    def merge_requirements_from_environment(self, environment, previously_merged):
         if self.requirements:
             map = self.map_requirements(environment, map={}, previously_required=[])
 
@@ -181,7 +181,7 @@ class Resource:
 
                 if resource.base_name not in previously_merged:
                     merged_content = merged_content[:requirement.insert_location[0]] + \
-                                     resource.merge_requirements_from_environemnt(environment, previously_merged) + \
+                                     resource.merge_requirements_from_environment(environment, previously_merged) + \
                                      merged_content[requirement.insert_location[1]:]
                 else:
                     merged_content = merged_content[:requirement.insert_location[0]] +\
