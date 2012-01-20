@@ -60,7 +60,7 @@ class Resource:
         if self._file_type == 'javascript':
             require_re = re.compile(r'[ \t]*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*\n{0,1}')
         else: # 'css'
-            require_re = re.compile(r'\@import url\((")(\S+)"\)')
+            require_re = re.compile(r'\@import url\((")(\S+)\.\S+"\)')
 
         # This loop expects each match to have 2 groups. The first group captures the
         # punctuation mark around the file name and the second captures the name itself
