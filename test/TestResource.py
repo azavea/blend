@@ -3,7 +3,8 @@ import os
 import shutil
 import tempfile
 
-from pipeline import Resource, Environment
+from pipeline import Resource, Environment, Requirement
+from pipeline.Requirement import RequirementNotSatisfiedException
 
 class TestResource(unittest.TestCase):
     """Asserts that the properties and methods of the Resource class behave correctly."""
@@ -188,6 +189,18 @@ class TestResource(unittest.TestCase):
         self.assertEqual('// This is file 1\n// This is LOCAL file 2', actual_merged_content)
 
         TestResource.clean_up_test_files(paths_to_test_files)
+
+    def test_global_resource_not_merged_for_local_requirement(self):
+        paths_to_test_files = [
+            os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
+            os.path.join(self.test_env_dir, 'dir2', 'file2.js')]
+        TestResource.clean_up_test_files(paths_to_test_files)
+        TestResource.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require "FILE2"')
+        TestResource.create_test_file_with_content(paths_to_test_files[1], '// This is GLOBAL file 2')
+        file1_resource = Resource(paths_to_test_files[0])
+
+        self.assertRaises(RequirementNotSatisfiedException, file1_resource.merge_requirements_from_environemnt,
+            Environment(self.test_env_dir, include_cwd=False), previously_merged=[])
 
     def test_merge_recusive_requirements_in_global_path(self):
         paths_to_test_files = [

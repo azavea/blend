@@ -3,7 +3,7 @@ import re
 from copy import deepcopy
 import shutil
 
-from Requirement import Requirement
+from Requirement import Requirement, RequirementNotSatisfiedException
 from Environment import Environment
 
 class Resource:
@@ -177,6 +177,8 @@ class Resource:
             # in reverse order ensures merging multiple files into the same target will work correctly.
             for requirement in reversed(self.requirements):
                 resource = map[requirement.standard_name]['resource']
+
+
                 if resource.base_name not in previously_merged:
                     merged_content = merged_content[:requirement.insert_location[0]] + \
                                      resource.merge_requirements_from_environemnt(environment, previously_merged) + \
@@ -209,6 +211,10 @@ class Resource:
                             'resource': resource,
                             'previously_required': deepcopy(previously_required)
                         }
+
+                if not map[requirement.standard_name]:
+                    raise RequirementNotSatisfiedException(requirement, environment)
+
         return map
 
 

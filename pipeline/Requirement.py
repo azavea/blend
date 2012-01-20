@@ -60,3 +60,8 @@ class Requirement:
         that will be replaced by the content of the required resource.
         """
         return self._insert_location
+
+class RequirementNotSatisfiedException(Exception):
+    def __init__(self, requirement, environment):
+        self.requirement = requirement
+        self.environment = environment
