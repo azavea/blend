@@ -17,6 +17,9 @@ class TestResource(unittest.TestCase):
     def test_resource_must_be_created_with_path_to_file(self):
         self.assertRaises(Exception, Resource)
 
+    def test_resource_must_be_created_with_a_non_none_path_to_file(self):
+        self.assertRaises(Exception, Resource, None)
+
     def test_resource_must_be_created_with_a_string_argument(self):
         self.assertRaises(Exception, Resource, 1)
 

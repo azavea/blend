@@ -6,6 +6,7 @@ class TestRequirement(unittest.TestCase):
 
     def test_requirement_must_be_created_with_a_name_and_a_type(self):
         self.assertRaises(Exception, Requirement)
+        self.assertRaises(Exception, Requirement, "name but None type", None)
         self.assertRaises(Exception, Requirement, 'name but not type')
         self.assertRaises(Exception, Requirement, None, None)
         requirement = Requirement('name', 'local')
