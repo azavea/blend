@@ -199,7 +199,7 @@ class Resource:
                 if requirement.type == 'global':
                     resources_of_the_same_type = Resource.find_all_of_type_in_environment(self.file_type, environment)
                 else: # requirement.type == 'local'
-                    resources_of_the_same_type = Resource._find_all_of_type_in_path(self.file_type, os.path.dirname(self.path_to_file))
+                    resources_of_the_same_type = Resource.find_all_of_type_in_path(self.file_type, os.path.dirname(self.path_to_file))
 
                 for resource in resources_of_the_same_type:
                     if resource.base_name == requirement.standard_name:
@@ -232,11 +232,11 @@ class Resource:
         """
         resources = []
         for path in environment.paths:
-            resources.extend(Resource._find_all_of_type_in_path(file_type, path))
+            resources.extend(Resource.find_all_of_type_in_path(file_type, path))
         return resources if len(resources) > 0 else None
 
     @staticmethod
-    def _find_all_of_type_in_path(file_type, path):
+    def find_all_of_type_in_path(file_type, path):
         """
         Get a list of Resource instances representing all the files in the specified
         directory (and sub-directories) that have the specified file_type
