@@ -15,6 +15,7 @@ class TestResource(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.test_env_dir)
+        clean_output()
 
     def test_resource_must_be_created_with_path_to_file(self):
         self.assertRaises(Exception, Resource)

@@ -1,4 +1,5 @@
 import os
+import shutil
 
 def create_test_files(paths_to_files):
     if isinstance(paths_to_files, basestring):
@@ -27,3 +28,8 @@ def clean_up_test_files(paths_to_files):
     for path_to_file in internal_paths_to_files:
         if os.path.exists(path_to_file):
             os.remove(path_to_file)
+
+def clean_output():
+    output_dir = os.path.join(os.getcwd(), "output")
+    if os.path.exists(output_dir):
+        shutil.rmtree(output_dir)

@@ -1,9 +1,20 @@
 import os
 import unittest
+import tempfile
+import shutil
 
+from helpers import *
 from pipeline import Application
 
 class TestApplication(unittest.TestCase):
+
+    def setUp(self):
+        self.test_env_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.test_env_dir)
+        clean_output()
+
     def test_default_env_is_cwd(self):
         app = Application()
         self.assertEquals(app.environment.paths, [os.getcwd()])
