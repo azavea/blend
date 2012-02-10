@@ -3,7 +3,7 @@ import tempfile
 
 from pipeline import Resource, Environment
 from pipeline.Requirement import RequirementNotSatisfiedException
-from pipeline.test.helpers import *
+from helpers import *
 
 class TestResource(unittest.TestCase):
     """Asserts that the properties and methods of the Resource class behave correctly."""

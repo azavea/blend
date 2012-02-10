@@ -1,7 +1,7 @@
 import unittest
 import tempfile
 
-from pipeline.test.helpers import *
+from helpers import *
 from pipeline import Application
 
 class TestApplication(unittest.TestCase):
