@@ -211,16 +211,17 @@ class Resource:
                 else: # requirement.type == 'local'
                     resources_of_the_same_type = Resource.find_all_of_type_in_path(self.file_type, os.path.dirname(self.path_to_file))
 
-                for resource in resources_of_the_same_type:
-                    if resource.base_name == requirement.standard_name:
-                        new_previously_required = deepcopy(previously_required)
-                        new_previously_required.append(requirement.standard_name)
-                        resource.map_requirements(environment, map, new_previously_required)
+                if resources_of_the_same_type is not None:
+                    for resource in resources_of_the_same_type:
+                        if resource.base_name == requirement.standard_name:
+                            new_previously_required = deepcopy(previously_required)
+                            new_previously_required.append(requirement.standard_name)
+                            resource.map_requirements(environment, map, new_previously_required)
 
-                        map[requirement.standard_name] = {
-                            'resource': resource,
-                            'previously_required': deepcopy(previously_required)
-                        }
+                            map[requirement.standard_name] = {
+                                'resource': resource,
+                                'previously_required': deepcopy(previously_required)
+                            }
 
                 if not map[requirement.standard_name]:
                     raise RequirementNotSatisfiedException(requirement, environment)
