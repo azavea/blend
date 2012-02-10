@@ -1,6 +1,7 @@
 import os
 import subprocess
 from distutils.core import setup, Command
+import setuptools
 
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
