@@ -4,6 +4,7 @@ import tempfile
 import helpers
 import shutil
 import os
+import sys
 from pipeline import Application
 
 class TestApplication(unittest.TestCase):
@@ -55,6 +56,7 @@ class TestApplication(unittest.TestCase):
         self.assertEqual(0, app.run())
         helpers.clean_up_test_files(paths_to_test_files)
 
+    @unittest.skipIf(len(sys.argv) > 1, "If arguments are passed to the unit test runner, this test fails")
     def test_main_exits_cleanly_when_no_args_are_passed(self):
         app = Application
         try:
