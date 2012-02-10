@@ -2,3 +2,4 @@
 .idea
 MANIFEST
 dist
+*egg-info
