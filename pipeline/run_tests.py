@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-import unittest, logging
-from optparse import OptionParser
+import unittest
 
 import os
 import sys
