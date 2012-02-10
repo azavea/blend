@@ -1,9 +1,7 @@
-import os
 import unittest
 import tempfile
-import shutil
 
-from helpers import *
+from pipeline.test.helpers import *
 from pipeline import Application
 
 class TestApplication(unittest.TestCase):

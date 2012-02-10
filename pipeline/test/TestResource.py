@@ -1,11 +1,9 @@
 import unittest
-import os
-import shutil
 import tempfile
 
-from pipeline import Resource, Environment, Requirement
+from pipeline import Resource, Environment
 from pipeline.Requirement import RequirementNotSatisfiedException
-from helpers import *
+from pipeline.test.helpers import *
 
 class TestResource(unittest.TestCase):
     """Asserts that the properties and methods of the Resource class behave correctly."""
