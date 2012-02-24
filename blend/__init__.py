@@ -28,5 +28,6 @@ from Environment import Environment
 from Application import Application
 from Analyzer import Analyzer
 from Analysis import Analysis
+from SizeAnalyzer import SizeAnalyzer
 
 __version__ = '0.0.1'

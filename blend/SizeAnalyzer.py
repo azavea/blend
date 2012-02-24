@@ -22,30 +22,13 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-import unittest
-import inspect
+from Analyzer import Analyzer
+from Analysis import Analysis
 
-from blend import *
+class SizeAnalyzer(Analyzer):
 
-class TestBlend(unittest.TestCase):
-    """Assert that the blend module contains a set of expected classes and methods."""
-    def test_blend_has_a_resource_class(self):
-        inspect.isclass(Resource)
-        
-    def test_blend_has_a_requirement_class(self):
-        inspect.isclass(Requirement)
-
-    def test_blend_has_an_environment_class(self):
-        inspect.isclass(Environment)
-
-    def test_blend_has_an_application_class(self):
-        inspect.isclass(Application)
-
-    def test_blend_has_an_analyzer_class(self):
-        inspect.isclass(Analyzer)
-
-    def test_blend_has_an_analysis_class(self):
-        inspect.isclass(Analysis)
-
-    def test_blend_has_a_size_analyzer_class(self):
-        inspect.isclass(SizeAnalyzer)
+    def analyze(self, source):
+        analysis = Analysis()
+        # This analyzer only computes the size of the content, it does not judge the quality
+        analysis.good = True
+        return analysis

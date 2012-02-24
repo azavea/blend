@@ -23,29 +23,21 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import unittest
-import inspect
+import os
+from blend import SizeAnalyzer, Analysis
 
-from blend import *
+class TestSizeAnalyzer(unittest.TestCase):
 
-class TestBlend(unittest.TestCase):
-    """Assert that the blend module contains a set of expected classes and methods."""
-    def test_blend_has_a_resource_class(self):
-        inspect.isclass(Resource)
-        
-    def test_blend_has_a_requirement_class(self):
-        inspect.isclass(Requirement)
+    def setUp(self):
+        self.analyzer = SizeAnalyzer()
 
-    def test_blend_has_an_environment_class(self):
-        inspect.isclass(Environment)
+    def tearDown(self):
+        pass
 
-    def test_blend_has_an_application_class(self):
-        inspect.isclass(Application)
+    def test_analyze_method_produces_an_analysis_instance(self):
+        analysis = self.analyzer.analyze('some text')
+        self.assertIsNotNone(analysis)
 
-    def test_blend_has_an_analyzer_class(self):
-        inspect.isclass(Analyzer)
-
-    def test_blend_has_an_analysis_class(self):
-        inspect.isclass(Analysis)
-
-    def test_blend_has_a_size_analyzer_class(self):
-        inspect.isclass(SizeAnalyzer)
+    def test_analysis_is_always_good(self):
+        analysis = self.analyzer.analyze('some text')
+        self.assertTrue(analysis.good)
