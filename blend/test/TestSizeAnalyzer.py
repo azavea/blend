@@ -56,9 +56,9 @@ class TestSizeAnalyzer(unittest.TestCase):
         self.assertIsNotNone(analysis.messages)
         self.assertEqual(1, len(analysis.messages))
 
-    def test_analysis_message_contatins_content_size_and_line_count(self):
+    def test_analysis_message_contatins_char_count_line_count_and_file_size(self):
         analysis = self.analyzer.analyze(self.resource)
-        self.assertEqual('%d characters in %d lines' % (21, 2), analysis.messages[0])
+        self.assertEqual('%d characters in %d lines for %d bytes' % (21, 2, 22), analysis.messages[0])
 
     def test_analysis_converted_to_string_is_the_single_message(self):
         analysis = self.analyzer.analyze(self.resource)

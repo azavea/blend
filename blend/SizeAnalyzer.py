@@ -39,6 +39,6 @@ class SizeAnalyzer(Analyzer):
         char_count = reduce(lambda count, x: count+len(x), lines, 0)
         if (analysis.messages is None):
             analysis.messages = []
-        analysis.messages.append('%d characters in %d %s' % (char_count, len(lines), line_noun))
+        analysis.messages.append('%d characters in %d %s for %d bytes' % (char_count, len(lines), line_noun, resource.size))
 
         return analysis

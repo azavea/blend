@@ -47,10 +47,10 @@ class Resource:
         self._path_to_file = path_to_file
         self._extension, self._file_type = Resource._parse_extension_and_file_type(path_to_file)
         self._base_name = Resource._parse_base_name(path_to_file)
-        self._set_content(path_to_file)
+        self._set_content_and_size(path_to_file)
         self._set_requirements()
 
-    def _set_content(self, path_to_file):
+    def _set_content_and_size(self, path_to_file):
         """
         Reads the content of the file specified by path_to_file into the _content
         member variable.
@@ -61,6 +61,7 @@ class Resource:
         set to None
         """
         if os.path.exists(path_to_file):
+            self._size = os.path.getsize(path_to_file)
             f = open(path_to_file, 'r')
             try:
                 self._content = f.read()
@@ -68,6 +69,7 @@ class Resource:
                 f.close()
         else:
             self._content = None
+            self._size = 0
 
     def _set_requirements(self):
         """
@@ -161,6 +163,13 @@ class Resource:
         Whether or not the file represented by the Resource exists on disk.
         """
         return os.path.exists(self.path_to_file)
+
+    @property
+    def size(self):
+        """
+        The path at which the physical file is/will be located.
+        """
+        return self._size
 
     @property
     def content(self):

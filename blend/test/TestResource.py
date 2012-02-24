@@ -61,6 +61,14 @@ class TestResource(unittest.TestCase):
         resource = Resource(test_file_name)
         self.assertEqual('unknown', resource.file_type)
 
+    def test_resource_has_a_size_property(self):
+        test_env_dir = tempfile.mkdtemp()
+        test_file_path = os.path.join(test_env_dir, 'test_file.txt')
+        helpers.create_test_file_with_content(test_file_path, 'some\ttext\non two lines')
+        resource = Resource(test_file_path)
+        self.assertEqual(22, resource.size)
+        shutil.rmtree(test_env_dir)
+
     def test_resource_has_an_extension_property(self):
         test_file_names_and_expected_extensions = [
             ('/var/someFile.js',       'js'),
