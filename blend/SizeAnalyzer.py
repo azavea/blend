@@ -27,16 +27,18 @@ from Analysis import Analysis
 
 class SizeAnalyzer(Analyzer):
 
-    def analyze(self, source):
-        analysis = Analysis()
+    def analyze(self, resource):
+        analysis = Analyzer.analyze(self, resource)
         # This analyzer only computes the size of the content, it does not judge the quality
-        lines = source.split('\n')
+        lines = resource.content.split('\n')
         analysis.good = True
         if (len(lines) == 1):
             line_noun = 'line'
         else:
             line_noun = 'lines'
         char_count = reduce(lambda count, x: count+len(x), lines, 0)
-        analysis.messages = ['%d characters in %d %s' % (char_count, len(lines), line_noun)]
+        if (analysis.messages is None):
+            analysis.messages = []
+        analysis.messages.append('%d characters in %d %s' % (char_count, len(lines), line_noun))
 
         return analysis

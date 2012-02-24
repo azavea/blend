@@ -24,21 +24,26 @@
 
 import unittest
 import os
-from blend import Analyzer, Analysis
+from blend import Analyzer, Analysis, Resource
+from helpers import create_test_files
 
 class TestAnalyzer(unittest.TestCase):
 
     def setUp(self):
         self.analyzer = Analyzer()
+        self.resource = Resource('path/to/some/file')
 
     def tearDown(self):
         pass
 
-    def test_has_an_analyze_method(self):
-        self.analyzer.analyze('some text')
+    def test_has_an_analyze_method_that_takes_a_resource(self):
+        self.analyzer.analyze(self.resource)
+
+    def test_has_an_analyze_method_requires_a_resource_argument(self):
+        self.assertRaises(Exception, self.analyzer.analyze, "some text")
 
     def test_analyze_method_produces_an_analysis_instance(self):
-        analysis = self.analyzer.analyze('some text')
+        analysis = self.analyzer.analyze(self.resource)
         self.assertIsNotNone(analysis)
         self.assertIsInstance(analysis, Analysis)
 

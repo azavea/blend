@@ -24,35 +24,42 @@
 
 import unittest
 import os
-from blend import SizeAnalyzer, Analysis
+import shutil
+import tempfile
+from helpers import create_test_file_with_content
+from blend import SizeAnalyzer, Resource
 
 class TestSizeAnalyzer(unittest.TestCase):
 
     def setUp(self):
         self.analyzer = SizeAnalyzer()
+        self.test_env_dir = tempfile.mkdtemp()
+        self.test_file_path = os.path.join(self.test_env_dir, 'test_file.txt')
+        create_test_file_with_content(self.test_file_path, 'some\ttext\non two lines')
+        self.resource = Resource(self.test_file_path)
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.test_env_dir)
 
     def test_analyze_method_produces_an_analysis_instance(self):
-        analysis = self.analyzer.analyze('some text')
+        analysis = self.analyzer.analyze(self.resource)
         self.assertIsNotNone(analysis)
 
     def test_analysis_is_always_good(self):
-        analysis = self.analyzer.analyze('some text')
+        analysis = self.analyzer.analyze(self.resource)
         self.assertTrue(analysis.good)
 
     def test_analysis_has_no_warnings_no_errors_and_one_message(self):
-        analysis = self.analyzer.analyze('some text')
+        analysis = self.analyzer.analyze(self.resource)
         self.assertIsNone(analysis.warnings)
         self.assertIsNone(analysis.errors)
         self.assertIsNotNone(analysis.messages)
         self.assertEqual(1, len(analysis.messages))
 
     def test_analysis_message_contatins_content_size_and_line_count(self):
-        analysis = self.analyzer.analyze('some\ttext\non two lines')
+        analysis = self.analyzer.analyze(self.resource)
         self.assertEqual('%d characters in %d lines' % (21, 2), analysis.messages[0])
 
     def test_analysis_converted_to_string_is_the_single_message(self):
-        analysis = self.analyzer.analyze('some\ttext\non two lines')
+        analysis = self.analyzer.analyze(self.resource)
         self.assertEqual(analysis.messages[0], str(analysis))

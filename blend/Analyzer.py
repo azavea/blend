@@ -22,9 +22,12 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
+from Resource import Resource
 from Analysis import Analysis
 
 class Analyzer():
 
-    def analyze(self, source):
+    def analyze(self, resource):
+        if resource is not None and not isinstance(resource, Resource):
+            raise Exception('analyze must be called with a Resource instance')
         return Analysis()
