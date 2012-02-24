@@ -58,3 +58,24 @@ class Analysis():
         """
         return self._good
 
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        output = None
+        if (self.errors):
+            output = '\n'.join(self.errors)
+
+        if (self.warnings):
+            if output:
+                output += '\n'.join(self.warnings)
+            else:
+                output = '\n'.join(self.warnings)
+
+        if (self.messages):
+            if output:
+                output += '\n'.join(self.messages)
+            else:
+                output = '\n'.join(self.messages)
+
+        return output

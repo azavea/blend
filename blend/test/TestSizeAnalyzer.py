@@ -41,3 +41,18 @@ class TestSizeAnalyzer(unittest.TestCase):
     def test_analysis_is_always_good(self):
         analysis = self.analyzer.analyze('some text')
         self.assertTrue(analysis.good)
+
+    def test_analysis_has_no_warnings_no_errors_and_one_message(self):
+        analysis = self.analyzer.analyze('some text')
+        self.assertIsNone(analysis.warnings)
+        self.assertIsNone(analysis.errors)
+        self.assertIsNotNone(analysis.messages)
+        self.assertEqual(1, len(analysis.messages))
+
+    def test_analysis_message_contatins_content_size_and_line_count(self):
+        analysis = self.analyzer.analyze('some\ttext\non two lines')
+        self.assertEqual('%d characters in %d lines' % (21, 2), analysis.messages[0])
+
+    def test_analysis_converted_to_string_is_the_single_message(self):
+        analysis = self.analyzer.analyze('some\ttext\non two lines')
+        self.assertEqual(analysis.messages[0], str(analysis))
