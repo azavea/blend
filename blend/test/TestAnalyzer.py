@@ -41,3 +41,15 @@ class TestAnalyzer(unittest.TestCase):
         analysis = self.analyzer.analyze('some text')
         self.assertIsNotNone(analysis)
         self.assertIsInstance(analysis, Analysis)
+
+    def test_analysis_has_a_messages_property(self):
+        analysis = self.analyzer.analyze(None)
+        self.assertIsNone(analysis.messages)
+
+    def test_analysis_has_a_warnings_property(self):
+        analysis = self.analyzer.analyze(None)
+        self.assertIsNone(analysis.warnings)
+
+    def test_analysis_has_an_errors_property(self):
+        analysis = self.analyzer.analyze(None)
+        self.assertIsNone(analysis.errors)
