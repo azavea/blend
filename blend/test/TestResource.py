@@ -1,8 +1,8 @@
 import unittest
 import tempfile
 
-from pipeline import Resource, Environment
-from pipeline.Requirement import RequirementNotSatisfiedException
+from blend import Resource, Environment
+from blend.Requirement import RequirementNotSatisfiedException
 import shutil
 import os
 import helpers

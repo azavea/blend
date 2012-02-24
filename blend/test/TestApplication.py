@@ -5,7 +5,7 @@ import helpers
 import shutil
 import os
 import sys
-from pipeline import Application
+from blend import Application
 
 class TestApplication(unittest.TestCase):
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import pipeline
+import blend
 
 if __name__ == '__main__':
-    pipeline.Application.main()
+    blend.Application.main()

@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from pipeline import Environment
+from blend import Environment
 
 class TestEnvironment(unittest.TestCase):
 

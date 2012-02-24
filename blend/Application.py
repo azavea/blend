@@ -48,7 +48,7 @@ class Application():
     def main():
         parser = optparse.OptionParser("""usage %prog [options] [file1 [file2 [fileN]]]
 
-If no file arguments are specified, the pipeline searches the specified
+If no file arguments are specified, blend searches the specified
 environment paths and processes any and all files that require other files.
 
 If no environment paths are specified, the current working directory is

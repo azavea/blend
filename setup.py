@@ -7,13 +7,13 @@ def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
 class RunTests(Command):
-    description = "Run the unit test suite for pipeline."
+    description = "Run the unit test suite for blend."
     user_options = []
     extra_env = {}
     extra_args = []
 
     def run(self):
-        run_tests_script_path = os.path.join(os.path.dirname(__file__), 'pipeline', 'run_tests.py')
+        run_tests_script_path = os.path.join(os.path.dirname(__file__), 'blend', 'run_tests.py')
         subprocess.call([run_tests_script_path])
 
     def initialize_options(self):
@@ -23,13 +23,13 @@ class RunTests(Command):
         pass
 
 setup(
-    name='Pipeline',
+    name='Blend',
     version='0.0.1',
     author='Justin Walgran',
     author_email='jwalgran@azavea.com',
-    packages=['pipeline', 'pipeline.test'],
-    scripts=['bin/pipeline'],
-    url='http://github.com/azavea/pipeline',
+    packages=['blend', 'blend.test'],
+    scripts=['bin/blend'],
+    url='http://github.com/azavea/blend',
     license='LICENSE.txt',
     description='A cross-platform tool for merging and processing client-side assets for a web application.',
     long_description=read('README.txt'),

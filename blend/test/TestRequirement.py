@@ -1,6 +1,6 @@
 import unittest
 
-from pipeline import Requirement
+from blend import Requirement
 
 class TestRequirement(unittest.TestCase):
 
