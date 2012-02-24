@@ -43,3 +43,6 @@ class TestBlend(unittest.TestCase):
 
     def test_blend_has_an_analyzer_class(self):
         inspect.isclass(Analyzer)
+
+    def test_blend_has_an_analysis_class(self):
+        inspect.isclass(Analysis)

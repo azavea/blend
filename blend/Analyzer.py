@@ -22,5 +22,9 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
+from Analysis import Analysis
+
 class Analyzer():
-    pass
+
+    def analyze(self, source):
+        return Analysis()

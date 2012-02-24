@@ -22,11 +22,5 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from Resource import Resource
-from Requirement import Requirement
-from Environment import Environment
-from Application import Application
-from Analyzer import Analyzer
-from Analysis import Analysis
-
-__version__ = '0.0.1'
+class Analysis():
+    pass

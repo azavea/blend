@@ -22,11 +22,22 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from Resource import Resource
-from Requirement import Requirement
-from Environment import Environment
-from Application import Application
-from Analyzer import Analyzer
-from Analysis import Analysis
+import unittest
+import os
+from blend import Analyzer, Analysis
 
-__version__ = '0.0.1'
+class TestAnalyzer(unittest.TestCase):
+
+    def setUp(self):
+        self.analyzer = Analyzer()
+
+    def tearDown(self):
+        pass
+
+    def test_has_an_analyze_method(self):
+        self.analyzer.analyze('some text')
+
+    def test_analyze_method_produces_an_analysis_instance(self):
+        analysis = self.analyzer.analyze('some text')
+        self.assertIsNotNone(analysis)
+        self.assertIsInstance(analysis, Analysis)
