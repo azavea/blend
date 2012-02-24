@@ -53,3 +53,7 @@ class TestAnalyzer(unittest.TestCase):
     def test_analysis_has_an_errors_property(self):
         analysis = self.analyzer.analyze(None)
         self.assertIsNone(analysis.errors)
+
+    def test_analysis_has_a_good_property(self):
+        analysis = self.analyzer.analyze(None)
+        self.assertIsNotNone(analysis.good)
