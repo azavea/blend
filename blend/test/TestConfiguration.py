@@ -23,32 +23,13 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import unittest
-import inspect
 
-from blend import *
+from blend import Configuration
 
-class TestBlend(unittest.TestCase):
-    """Assert that the blend module contains a set of expected classes and methods."""
-    def test_blend_has_a_resource_class(self):
-        inspect.isclass(Resource)
-        
-    def test_blend_has_a_requirement_class(self):
-        inspect.isclass(Requirement)
+class TestConfiguration(unittest.TestCase):
 
-    def test_blend_has_an_environment_class(self):
-        inspect.isclass(Environment)
+    def setUp(self):
+        pass
 
-    def test_blend_has_an_application_class(self):
-        inspect.isclass(Application)
-
-    def test_blend_has_an_analyzer_class(self):
-        inspect.isclass(Analyzer)
-
-    def test_blend_has_an_analysis_class(self):
-        inspect.isclass(Analysis)
-
-    def test_blend_has_a_size_analyzer_class(self):
-        inspect.isclass(SizeAnalyzer)
-
-    def test_blend_has_a_configuration_class(self):
-        inspect.isclass(Configuration)
+    def tearDown(self):
+        pass
