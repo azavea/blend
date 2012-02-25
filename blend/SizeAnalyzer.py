@@ -23,7 +23,6 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 from Analyzer import Analyzer
-from Analysis import Analysis
 
 class SizeAnalyzer(Analyzer):
 
@@ -32,12 +31,12 @@ class SizeAnalyzer(Analyzer):
         # This analyzer only computes the size of the content, it does not judge the quality
         lines = resource.content.split('\n')
         analysis.good = True
-        if (len(lines) == 1):
+        if len(lines) == 1:
             line_noun = 'line'
         else:
             line_noun = 'lines'
         char_count = reduce(lambda count, x: count+len(x), lines, 0)
-        if (analysis.messages is None):
+        if analysis.messages is None:
             analysis.messages = []
         analysis.messages.append('%d characters in %d %s for %d bytes' % (char_count, len(lines), line_noun, resource.size))
 

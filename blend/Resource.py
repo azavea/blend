@@ -25,10 +25,8 @@
 import os
 import re
 from copy import deepcopy
-import shutil
 
 from Requirement import Requirement, RequirementNotSatisfiedException
-from Environment import Environment
 
 class Resource:
     """
@@ -84,9 +82,9 @@ class Resource:
             return
 
         if self._file_type == 'javascript':
-            require_re = re.compile(r'[ \t]*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*\n{0,1}')
+            require_re = re.compile(r'[ \t]*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*\n?')
         else: # 'css'
-            require_re = re.compile(r'\@import url\((?P<import_punc>")(?P<import_match>\S+)\.\S+"\)|[ \t]*/\*=[ \t]+require[ \t]+(?P<require_punc>[<"])(?P<require_match>\S+)[>"][ \t]*\*/\n{0,1}')
+            require_re = re.compile(r'@import url\((?P<import_punc>")(?P<import_match>\S+)\.\S+"\)|[ \t]*/\*=[ \t]+require[ \t]+(?P<require_punc>[<"])(?P<require_match>\S+)[>"][ \t]*\*/\n?')
 
         # This loop expects each match to have 2 groups. The first group captures the
         # punctuation mark around the file name and the second captures the name itself

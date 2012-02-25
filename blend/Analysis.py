@@ -63,16 +63,16 @@ class Analysis():
 
     def __unicode__(self):
         output = None
-        if (self.errors):
+        if self.errors:
             output = '\n'.join(self.errors)
 
-        if (self.warnings):
+        if self.warnings:
             if output:
                 output += '\n'.join(self.warnings)
             else:
                 output = '\n'.join(self.warnings)
 
-        if (self.messages):
+        if self.messages:
             if output:
                 output += '\n'.join(self.messages)
             else:

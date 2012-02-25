@@ -23,9 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import unittest
-import os
 from blend import Analyzer, Analysis, Resource
-from helpers import create_test_files
 
 class TestAnalyzer(unittest.TestCase):
 

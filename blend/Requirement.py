@@ -86,6 +86,7 @@ class Requirement:
         return self._insert_location
 
 class RequirementNotSatisfiedException(Exception):
-    def __init__(self, requirement, environment):
+    def __init__(self, requirement, environment, *args, **kwargs):
+        super(RequirementNotSatisfiedException, self).__init__(*args, **kwargs)
         self.requirement = requirement
         self.environment = environment
