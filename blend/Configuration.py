@@ -22,5 +22,22 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
+from blend import Analyzer
+
 class Configuration():
-    pass
+
+    def __init__(self):
+        self.analyzers = None
+
+    def add_analyzer_for_file_type(self, analyzer, file_type):
+        if not isinstance(analyzer, Analyzer):
+            raise Exception('You must pass and Analyzer instance')
+        if self.analyzers is None:
+            self.analyzers = {}
+        if file_type not in self.analyzers:
+            self.analyzers[file_type] = []
+        if analyzer not in self.analyzers[file_type]:
+            self.analyzers[file_type].append(analyzer)
+
+    def get_analyzers_for_file_type(self, file_type):
+        return self.analyzers[file_type]

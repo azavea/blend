@@ -25,6 +25,8 @@
 import unittest
 
 from blend import Configuration
+from blend import Analyzer
+from blend.SizeAnalyzer import SizeAnalyzer
 
 class TestConfiguration(unittest.TestCase):
 
@@ -33,3 +35,19 @@ class TestConfiguration(unittest.TestCase):
 
     def tearDown(self):
         pass
+
+    def test_can_add_analyzer_for_filetype(self):
+        conf = Configuration()
+        analyzer = Analyzer()
+        conf.add_analyzer_for_file_type(analyzer, 'javascript')
+        analyzers = conf.get_analyzers_for_file_type('javascript')
+        self.assertListEqual([analyzer], analyzers)
+
+    def test_add_analyzer_checks_classes(self):
+        conf = Configuration()
+        self.assertRaises(Exception, conf.add_analyzer_for_file_type, 'string instead of an analyzer', 'javascript')
+
+        # should not throw
+        conf.add_analyzer_for_file_type(Analyzer(), 'javascript')
+        # should not throw
+        conf.add_analyzer_for_file_type(SizeAnalyzer(), 'javascript')
