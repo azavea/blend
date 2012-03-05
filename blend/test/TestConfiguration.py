@@ -28,13 +28,20 @@ from blend import Configuration
 from blend import Analyzer
 from blend.SizeAnalyzer import SizeAnalyzer
 
+import os
+import shutil
+import tempfile
+
+from helpers import clean_output, create_test_file_with_content
+
 class TestConfiguration(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.test_env_dir = tempfile.mkdtemp()
 
     def tearDown(self):
-        pass
+        shutil.rmtree(self.test_env_dir)
+        clean_output()
 
     def test_can_add_analyzer_for_filetype(self):
         conf = Configuration()
@@ -42,6 +49,13 @@ class TestConfiguration(unittest.TestCase):
         conf.add_analyzer_for_file_type(analyzer, 'javascript')
         analyzers = conf.get_analyzers_for_file_type('javascript')
         self.assertListEqual([analyzer], analyzers)
+
+    def test_returns_non_when_asking_for_analyzers_for_an_unknown_file_type(self):
+        conf = Configuration()
+        analyzer = Analyzer()
+        conf.add_analyzer_for_file_type(analyzer, 'javascript')
+        analyzers = conf.get_analyzers_for_file_type('some-other-type')
+        self.assertIsNone(analyzers)
 
     def test_add_analyzer_checks_classes(self):
         conf = Configuration()
@@ -51,3 +65,22 @@ class TestConfiguration(unittest.TestCase):
         conf.add_analyzer_for_file_type(Analyzer(), 'javascript')
         # should not throw
         conf.add_analyzer_for_file_type(SizeAnalyzer(), 'javascript')
+
+    def test_throws_when_passed_an_invalid_config_file_path(self):
+        self.assertRaises(Exception, Configuration, '/some/non/existent/path')
+
+    def test_can_load_analyzers_from_config_file(self):
+        config_file_path = os.path.join(self.test_env_dir, 'blend.config')
+        create_test_file_with_content(config_file_path,
+"""{
+    "analyzers": {
+        "javascript": [
+            "blend.SizeAnalyzer"
+        ]
+    }
+}""")
+        conf = Configuration(config_file_path)
+        actual_analyzers = conf.get_analyzers_for_file_type('javascript')
+        self.assertIsNotNone(actual_analyzers)
+        self.assertEqual(1, len(actual_analyzers))
+        self.assertIsInstance(actual_analyzers[0], SizeAnalyzer)
