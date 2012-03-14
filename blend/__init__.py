@@ -30,5 +30,6 @@ from Analyzer import Analyzer
 from Analysis import Analysis
 from SizeAnalyzer import SizeAnalyzer
 from Configuration import Configuration
+from JSLintAnalyzer import JSLintAnalyzer
 
 __version__ = '0.0.1'

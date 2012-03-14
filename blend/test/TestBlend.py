@@ -52,3 +52,6 @@ class TestBlend(unittest.TestCase):
 
     def test_blend_has_a_configuration_class(self):
         inspect.isclass(Configuration)
+
+    def test_blend_has_a_JSLintAnalyzerClass(self):
+        inspect.isclass(JSLintAnalyzer)
