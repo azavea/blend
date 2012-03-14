@@ -55,3 +55,6 @@ class TestBlend(unittest.TestCase):
 
     def test_blend_has_a_JSLintAnalyzerClass(self):
         inspect.isclass(JSLintAnalyzer)
+
+    def test_blend_has_a_minifier_class(self):
+        inspect.isclass(Minifier)

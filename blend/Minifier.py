@@ -23,14 +23,10 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 from Resource import Resource
-from Requirement import Requirement
-from Environment import Environment
-from Application import Application
-from Analyzer import Analyzer
-from Analysis import Analysis
-from SizeAnalyzer import SizeAnalyzer
-from Configuration import Configuration
-from JSLintAnalyzer import JSLintAnalyzer
-from Minifier import Minifier
 
-__version__ = '0.0.1'
+class Minifier():
+
+    def minify(self, resource):
+        if resource is not None and not isinstance(resource, Resource):
+            raise Exception('minify must be called with a Resource instance')
+        return resource.content
