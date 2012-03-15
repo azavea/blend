@@ -23,6 +23,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import os
+import sys
 import subprocess
 from distutils.core import setup, Command
 import setuptools
@@ -38,7 +39,7 @@ class RunTests(Command):
 
     def run(self):
         run_tests_script_path = os.path.join(os.path.dirname(__file__), 'blend', 'run_tests.py')
-        subprocess.call([run_tests_script_path])
+        sys.exit(subprocess.call([run_tests_script_path]))
 
     def initialize_options(self):
         pass
