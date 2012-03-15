@@ -106,11 +106,11 @@ class TestResource(unittest.TestCase):
             self.assertEqual(expected_base_name, resource.base_name, 'Expected the base_name of "' +
                 test_file_path + '" to be "'+ expected_base_name + '" and not "' + resource.base_name + '"')
 
-    def test_find_all_javascript_resources_in_the_default_environment(self):
+    def test_find_all_javascript_resources_in_the_environment(self):
         paths_to_test_files = [os.path.join(self.test_env_dir, 'test.js'), os.path.join(self.test_env_dir, 'test.css'),
             os.path.join(self.test_env_dir, 'test.html')]
         helpers.create_test_files(paths_to_test_files)
-        resources = Resource.find_all_of_type_in_environment('javascript', Environment(self.test_env_dir))
+        resources = Resource.find_all_of_type_in_environment('javascript', Environment(self.test_env_dir, include_cwd=False))
         helpers.clean_up_test_files(paths_to_test_files)
         self.assertEquals(1, len(resources), 'One and only one javascript file should be found')
 
