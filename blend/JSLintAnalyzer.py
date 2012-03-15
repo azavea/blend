@@ -68,7 +68,7 @@ class JsLintComplaint(object):
 
 class JSLintAnalyzer(Analyzer):
 
-    def __init__(self, lib_path=None):
+    def __init__(self, lib_path=None, use_nodejs_if_available=True):
         self._js_lint_proc_args = None
         self._module_path = os.path.dirname(os.path.realpath(__file__))
         self._lib_path = lib_path or os.path.join(self._module_path, 'lib')
@@ -84,7 +84,7 @@ class JSLintAnalyzer(Analyzer):
             self._js_lint_proc_args = ["cscript.exe", "//I", "//Nologo", self._js_lint_script_file_path]
             self._lib_message_list.append("Using cscript.exe to run JSLint")
 
-        if self._js_lint_proc_args is None:
+        if self._js_lint_proc_args is None and use_nodejs_if_available:
             null_file = open(os.devnull, 'w')
             try:
                 subprocess.check_call(['node', '--help'], stdout=null_file, stderr=null_file)
