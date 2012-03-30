@@ -45,8 +45,13 @@ class YUICompressorMinifier(Minifier):
             minification.add_error('A YUI Compressor .jar file could not be found in %s.' % self._lib_path)
             return minification
 
-        # TODO: Actually run the minification
-        minification.set_content(resource.content)
-        minification.mark_as_good()
+        if resource.minified:
+            minification.set_content(resource.content)
+            minification.mark_as_good()
+            minification.add_message('The resource %s is already minified.' % resource.path_to_file)
+        else:
+            # TODO: Actually use the compressor
+            minification.set_content(resource.content)
+            minification.mark_as_good()
 
         return minification

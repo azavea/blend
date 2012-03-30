@@ -47,6 +47,11 @@ class TestYUICompressorMinifier(unittest.TestCase):
         create_test_file_with_content(test_file_path, 'var answer = 42;')
         return test_file_path
 
+    def make_a_minified_js_file(self, separator='.'):
+        test_file_path = os.path.join(self.test_env_dir, 'test%smin.js' % separator)
+        create_test_file_with_content(test_file_path, 'var a=42;')
+        return test_file_path
+
     def test_analysis_fails_when_lib_dir_is_not_found(self):
         invalid_lib_path = '/some/invalid/path'
         yuic = YUICompressorMinifier(lib_path=invalid_lib_path)
@@ -62,3 +67,13 @@ class TestYUICompressorMinifier(unittest.TestCase):
         minification = yuic.minify(test_resource)
         self.assertTrue(minification.good)
         self.assertEqual('', minification.content)
+
+    def test_minifying_an_already_minified_resource_returns_a_message_and_unmodified_content(self):
+        test_resource = Resource(self.make_a_minified_js_file())
+        self.assertTrue(test_resource.minified)
+        yuic = YUICompressorMinifier()
+        minification = yuic.minify(test_resource)
+        self.assertTrue(minification.good)
+        self.assertEqual(test_resource.content, minification.content)
+        self.assertEqual('The resource %s is already minified.' % test_resource.path_to_file,
+            minification.errors_warnings_and_messages_as_string)
