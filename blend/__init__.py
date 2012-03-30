@@ -32,5 +32,6 @@ from SizeAnalyzer import SizeAnalyzer
 from Configuration import Configuration
 from JSLintAnalyzer import JSLintAnalyzer
 from Minifier import Minifier
+from Result import Result
 
 __version__ = '0.0.1'

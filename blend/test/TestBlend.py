@@ -58,3 +58,6 @@ class TestBlend(unittest.TestCase):
 
     def test_blend_has_a_minifier_class(self):
         inspect.isclass(Minifier)
+
+    def test_blend_has_a_Result_class(self):
+        inspect.isclass(Result)

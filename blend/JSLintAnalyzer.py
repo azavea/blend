@@ -105,14 +105,10 @@ class JSLintAnalyzer(Analyzer):
 
     def analyze(self, resource):
         analysis = Analyzer.analyze(self, resource)
-        if analysis.messages is None:
-            analysis.messages = []
-        analysis.messages.extend(self._lib_message_list)
+        analysis.add_messages(self._lib_message_list)
         if self._js_lint_proc_args is None:
-            analysis.good = False
-            if analysis.errors is None:
-                analysis.errors = []
-            analysis.errors.append('No suitable JSLint runner (cscript.exe, node.js or rhino) could be found.')
+            analysis.mark_as_bad()
+            analysis.add_error('No suitable JSLint runner (cscript.exe, node.js or rhino) could be found.')
             return analysis
 
         try:
@@ -133,16 +129,14 @@ class JSLintAnalyzer(Analyzer):
                 % (js_lint_proc.returncode, self._js_lint_proc_args, js_lint_proc_output))
             return analysis
 
-        analysis.good = True # Assume that JSLint produced no complaints until parsing one from the process output
+        analysis.mark_as_good() # Assume that JSLint produced no complaints until parsing one from the process output
 
         js_lint_complaints = js_lint_proc_output[0].split("Lint at ")
         for complaint in js_lint_complaints:
             if len(complaint.strip()):
+                analysis.mark_as_bad()
                 js_lint_complaint = JsLintComplaint(complaint)
-                analysis.good = False
-                if analysis.errors is None:
-                    analysis.errors = []
-                analysis.errors.append(str(js_lint_complaint))
+                analysis.add_error(str(js_lint_complaint))
 
         return analysis
 
