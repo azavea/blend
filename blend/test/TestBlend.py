@@ -64,3 +64,6 @@ class TestBlend(unittest.TestCase):
 
     def test_blend_has_a_minification_class(self):
         inspect.isclass(Minification)
+
+    def test_blend_has_a_YUICompressorMinifier_class(self):
+        inspect.isclass(YUICompressorMinifier)

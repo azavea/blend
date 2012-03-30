@@ -22,18 +22,31 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from Resource import Resource
-from Requirement import Requirement
-from Environment import Environment
-from Application import Application
-from Analyzer import Analyzer
-from Analysis import Analysis
-from SizeAnalyzer import SizeAnalyzer
-from Configuration import Configuration
-from JSLintAnalyzer import JSLintAnalyzer
-from Minifier import Minifier
-from Result import Result
-from Minification import Minification
-from YUICompressorMinifier import YUICompressorMinifier
+import os
+import re
 
-__version__ = '0.0.1'
+from Minifier import Minifier
+from Minification import Minification
+from helpers import first_file_name_in_path_matching_regex
+
+class YUICompressorMinifier(Minifier):
+
+    def __init__(self, lib_path=None):
+        self._yuic_proc_args = None
+        self._module_path = os.path.dirname(os.path.realpath(__file__))
+        self._lib_path = lib_path or os.path.join(self._module_path, 'lib')
+        self._yuic_jar_regex = re.compile(r'^yuicompressor.*\.jar$')
+        self._yuic_jar_file_path = first_file_name_in_path_matching_regex(self._lib_path, self._yuic_jar_regex)
+
+    def minify(self, resource):
+        minification = Minifier.minify(self, resource)
+        if self._yuic_jar_file_path is None:
+            minification.mark_as_bad()
+            minification.add_error('A YUI Compressor .jar file could not be found in %s.' % self._lib_path)
+            return minification
+
+        # TODO: Actually run the minification
+        minification.set_content(resource.content)
+        minification.mark_as_good()
+
+        return minification
