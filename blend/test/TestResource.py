@@ -314,3 +314,19 @@ class TestResource(unittest.TestCase):
         self.assertEquals(2, len(resources))
         self.assertEqual(paths_to_processable_test_files[0], resources[0].path_to_file)
         self.assertEqual(paths_to_processable_test_files[1], resources[1].path_to_file)
+
+    def test_detects_minification_from_file_name(self):
+        test_file_paths = [
+            os.path.join(self.test_env_dir, 'dir1', 'file1.js'),
+            os.path.join(self.test_env_dir, 'dir2', 'file1.min.js'),
+            os.path.join(self.test_env_dir, 'dir2', 'file1-min.js')]
+
+        helpers.create_test_files(test_file_paths)
+
+        unminified_resource = Resource(test_file_paths[0])
+        minified_resource_with_dot = Resource(test_file_paths[1])
+        minified_resource_with_dash = Resource(test_file_paths[2])
+
+        self.assertFalse(unminified_resource.minified)
+        self.assertTrue(minified_resource_with_dot.minified)
+        self.assertTrue(minified_resource_with_dash.minified)

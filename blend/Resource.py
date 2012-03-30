@@ -44,7 +44,7 @@ class Resource:
 
         self._path_to_file = path_to_file
         self._extension, self._file_type = Resource._parse_extension_and_file_type(path_to_file)
-        self._base_name = Resource._parse_base_name(path_to_file)
+        self._base_name, self._minified = Resource._parse_base_name_and_minification_status(path_to_file)
         self._set_content_and_size(path_to_file)
         self._set_requirements()
 
@@ -130,7 +130,7 @@ class Resource:
         return ext, file_type
 
     @staticmethod
-    def _parse_base_name(path_to_file):
+    def _parse_base_name_and_minification_status(path_to_file):
         """
         Extract a lower case name from the specified path_to_file by removing the
         extension, '-min', and and version number if they are present.
@@ -140,13 +140,15 @@ class Resource:
         directory, file = os.path.split(path_to_file)
         name, dot, extension =  file.rpartition('.')
         lower_name = name.lower()
-        if lower_name[-4:] == '-min':
+        minified = False
+        if lower_name[-4:] == '-min' or lower_name[-4:] == '.min':
             lower_name = lower_name[:-4]
+            minified = True
         lower_name_without_version, dash, version = lower_name.rpartition('-')
         if dash == '':
-            return lower_name
+            return lower_name, minified
         else:
-            return lower_name_without_version
+            return lower_name_without_version, minified
 
     @property
     def path_to_file(self):
@@ -199,6 +201,10 @@ class Resource:
         Example: jQuery-1.5.4-min.js -> jquery
         """
         return self._base_name
+
+    @property
+    def minified(self):
+        return self._minified
 
     @property
     def requirements(self):
