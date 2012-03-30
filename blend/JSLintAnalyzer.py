@@ -27,6 +27,7 @@ import re
 import platform
 import subprocess
 from Analyzer import Analyzer
+from helpers import first_file_name_in_path_matching_regex
 
 class JsLintComplaint(object):
     def __init__(self, complaint):
@@ -73,9 +74,9 @@ class JSLintAnalyzer(Analyzer):
         self._module_path = os.path.dirname(os.path.realpath(__file__))
         self._lib_path = lib_path or os.path.join(self._module_path, 'lib')
         self._jslint_script_regex = re.compile(r'^jslint.*\.js$')
-        self._js_lint_script_file_path = self._first_file_name_in_path_matching_regex(self._lib_path, self._jslint_script_regex)
+        self._js_lint_script_file_path = first_file_name_in_path_matching_regex(self._lib_path, self._jslint_script_regex)
         self._rhino_jar_regex = re.compile(r'^js\.jar$')
-        self._rhino_jar_file_path = self._first_file_name_in_path_matching_regex(self._lib_path, self._rhino_jar_regex)
+        self._rhino_jar_file_path = first_file_name_in_path_matching_regex(self._lib_path, self._rhino_jar_regex)
         self._lib_message_list = []
 
         if self._js_lint_proc_args is None and platform.system() == 'Windows':
@@ -101,13 +102,6 @@ class JSLintAnalyzer(Analyzer):
                 self._lib_message_list.append("Using Rhino to run JSLint")
             else:
                 self._lib_message_list.append("Cannot use Rhino to run JSLint because js.jar could not be found in in %r" % self._lib_path)
-
-    def _first_file_name_in_path_matching_regex(self, path, regex):
-        if os.path.exists(path):
-            for file_name in os.listdir(path):
-                if regex.match(file_name):
-                    return os.path.join(path, file_name)
-        return None
 
     def analyze(self, resource):
         analysis = Analyzer.analyze(self, resource)
