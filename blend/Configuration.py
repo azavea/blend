@@ -25,12 +25,14 @@
 import os
 import json
 
-from blend import Analyzer
+from Analyzer import Analyzer
+from Minifier import Minifier
 
 class Configuration():
 
     def __init__(self, config_file_path=None):
         self.analyzers = None
+        self.minifiers = None
         if config_file_path is not None:
             if not os.path.exists(config_file_path):
                 raise Exception('Config file "%s" does not exist or is not accessible.' % config_file_path)
@@ -70,5 +72,21 @@ class Configuration():
 
         if file_type in self.analyzers:
             return self.analyzers[file_type]
+        else:
+            return None
+
+    def set_minifier_for_file_type(self, minifier, file_type):
+        if not isinstance(minifier, Minifier):
+            raise Exception('You must pass a Minifier instance')
+        if self.minifiers is None:
+            self.minifiers = {}
+        self.minifiers[file_type] = minifier
+
+    def get_minifier_for_file_type(self, file_type):
+        if self.minifiers is None:
+            return None
+
+        if file_type in self.minifiers:
+            return self.minifiers[file_type]
         else:
             return None

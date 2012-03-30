@@ -27,6 +27,8 @@ import unittest
 from blend import Configuration
 from blend import Analyzer
 from blend.SizeAnalyzer import SizeAnalyzer
+from blend import Minifier
+from blend.YUICompressorMinifier import YUICompressorMinifier
 
 import os
 import shutil
@@ -84,3 +86,26 @@ class TestConfiguration(unittest.TestCase):
         self.assertIsNotNone(actual_analyzers)
         self.assertEqual(1, len(actual_analyzers))
         self.assertIsInstance(actual_analyzers[0], SizeAnalyzer)
+
+    def test_can_add_minifier_for_filetype(self):
+        conf = Configuration()
+        minifier = Minifier()
+        conf.set_minifier_for_file_type(minifier, 'javascript')
+        actual_minifier = conf.get_minifier_for_file_type('javascript')
+        self.assertEqual(minifier, actual_minifier)
+
+    def test_add_minifier_checks_classes(self):
+        conf = Configuration()
+        self.assertRaises(Exception, conf.set_minifier_for_file_type, 'string instead of an minifier', 'javascript')
+
+        # should not throw
+        conf.set_minifier_for_file_type(Minifier(), 'javascript')
+        # should not throw
+        conf.set_minifier_for_file_type(YUICompressorMinifier(), 'javascript')
+
+    def test_returns_none_when_asking_for_minifier_for_an_unknown_file_type(self):
+        conf = Configuration()
+        minifier = Minifier()
+        conf.set_minifier_for_file_type(minifier, 'javascript')
+        analyzers = conf.get_minifier_for_file_type('some-other-type')
+        self.assertIsNone(analyzers)
