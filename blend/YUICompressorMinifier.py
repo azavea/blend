@@ -24,6 +24,7 @@
 
 import os
 import re
+import subprocess
 
 from Minifier import Minifier
 from Minification import Minification
@@ -50,8 +51,17 @@ class YUICompressorMinifier(Minifier):
             minification.mark_as_good()
             minification.add_message('The resource %s is already minified.' % resource.path_to_file)
         else:
-            # TODO: Actually use the compressor
-            minification.set_content(resource.content)
-            minification.mark_as_good()
+            yuic_proc_args = ["java", "-jar", self._yuic_jar_file_path, resource.path_to_file]
+            yuic_proc = subprocess.Popen(yuic_proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            yuic_output = yuic_proc.communicate()
+
+            if yuic_proc.returncode == 0:
+                minification.set_content(yuic_output[0])
+                minification.mark_as_good()
+            else:
+                minification.mark_as_bad()
+                minification.add_error("The YUI Compressor had non-zero exit code: " + str(yuic_proc.returncode) +
+                    "\n    " + str(yuic_proc_args) +
+                    "\n    " + yuic_output[1])
 
         return minification

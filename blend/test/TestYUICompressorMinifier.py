@@ -42,9 +42,9 @@ class TestYUICompressorMinifier(unittest.TestCase):
         create_test_file_with_content(test_file_path, '')
         return test_file_path
 
-    def make_a_js_file(self):
+    def make_a_js_file(self, content='var answer = 42;'):
         test_file_path = os.path.join(self.test_env_dir, 'test.js')
-        create_test_file_with_content(test_file_path, 'var answer = 42;')
+        create_test_file_with_content(test_file_path, content)
         return test_file_path
 
     def make_a_minified_js_file(self, separator='.'):
@@ -77,3 +77,18 @@ class TestYUICompressorMinifier(unittest.TestCase):
         self.assertEqual(test_resource.content, minification.content)
         self.assertEqual('The resource %s is already minified.' % test_resource.path_to_file,
             minification.errors_warnings_and_messages_as_string)
+
+    def test_compressor(self):
+        test_resource = Resource(self.make_a_js_file(
+            content='var answer = 42;\nvar question = "what is " +\n "6 times 7";'))
+        yuic = YUICompressorMinifier()
+        minification = yuic.minify(test_resource)
+        self.assertTrue(minification.good)
+        self.assertEqual('var answer=42;var question="what is 6 times 7";', minification.content)
+
+    def test_compressor_failure(self):
+        test_resource = Resource(self.make_a_js_file(
+            content='var obj = { function: "failure" }')) # 'function' is not a legal property name
+        yuic = YUICompressorMinifier()
+        minification = yuic.minify(test_resource)
+        self.assertFalse(minification.good)
