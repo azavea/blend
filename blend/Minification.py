@@ -22,17 +22,25 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from Resource import Resource
-from Requirement import Requirement
-from Environment import Environment
-from Application import Application
-from Analyzer import Analyzer
-from Analysis import Analysis
-from SizeAnalyzer import SizeAnalyzer
-from Configuration import Configuration
-from JSLintAnalyzer import JSLintAnalyzer
-from Minifier import Minifier
 from Result import Result
-from Minification import Minification
 
-__version__ = '0.0.1'
+class Minification(Result):
+    def __init__(self):
+        super(Minification, self).__init__()
+        self._content = None
+
+    @property
+    def content(self):
+        """
+        The result of minifying a Resource.
+        """
+        return self._content
+
+    def set_content(self, content):
+        self._content = content
+
+    def __unicode__(self):
+        if self.good:
+            return self.content or ""
+        else:
+            return self.errors_warnings_and_messages_as_string

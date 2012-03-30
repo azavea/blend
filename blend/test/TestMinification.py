@@ -22,17 +22,31 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
-from Resource import Resource
-from Requirement import Requirement
-from Environment import Environment
-from Application import Application
-from Analyzer import Analyzer
-from Analysis import Analysis
-from SizeAnalyzer import SizeAnalyzer
-from Configuration import Configuration
-from JSLintAnalyzer import JSLintAnalyzer
-from Minifier import Minifier
-from Result import Result
-from Minification import Minification
+import unittest
+from blend import Minification
 
-__version__ = '0.0.1'
+class TestMinification(unittest.TestCase):
+
+    def setUp(self):
+        self.minification = Minification()
+
+    def tearDown(self):
+        pass
+
+    def test_has_a_content_property(self):
+        self.assertIsNone(self.minification.content)
+
+    def test_can_set_content(self):
+        self.minification.set_content("content")
+        self.assertEqual("content", self.minification.content)
+
+    def test_converting_a_good_minification_to_string_returns_content(self):
+        self.minification.mark_as_good()
+        self.minification.set_content("content")
+        self.assertEqual("content", str(self.minification))
+
+    def test_converting_a_bad_minification_to_string_returns_error(self):
+        self.minification.mark_as_bad()
+        self.minification.set_content("content")
+        self.minification.add_error("error message")
+        self.assertEqual("error message", str(self.minification))

@@ -23,10 +23,11 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 from Resource import Resource
+from Minification import Minification
 
 class Minifier():
 
     def minify(self, resource):
         if resource is not None and not isinstance(resource, Resource):
             raise Exception('minify must be called with a Resource instance')
-        return resource.content
+        return Minification()
