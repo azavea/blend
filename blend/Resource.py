@@ -213,31 +213,37 @@ class Resource:
         """
         return self._requirements
 
-    def merge_requirements_from_environment(self, environment, previously_merged):
+    def get_chunks_by_merging_requirements_from_environment(self, environment, previously_merged):
         if self.requirements:
             map = self.map_requirements(environment, map={}, previously_required=[])
 
-            merged_content = ''.join(self.content) # Get a copy of the content string
-            # The requirements are parsed out of the file in order from top to bottom. If
-            # you also merge the requirements in that order, the insert position of the second
-            # requirement will be throw off by the merging of the first. Iterating over the list
-            # in reverse order ensures merging multiple files into the same target will work correctly.
-            for requirement in reversed(self.requirements):
-                resource = map[requirement.standard_name]['resource']
+            chunks_and_requirements = []
+            position = 0
 
+            for requirement in self.requirements:
+                chunks_and_requirements.append(Chunk(self, position, requirement.insert_location[0]))
+                chunks_and_requirements.append(requirement)
+                position = requirement.insert_location[1]
+            if position < len(self.content):
+                chunks_and_requirements.append(Chunk(self, position))
 
-                if resource.base_name not in previously_merged:
-                    merged_content = merged_content[:requirement.insert_location[0]] + \
-                                     resource.merge_requirements_from_environment(environment, previously_merged) + \
-                                     merged_content[requirement.insert_location[1]:]
+            chunks = []
+            for chunk_or_requirement in reversed(chunks_and_requirements):
+                if isinstance(chunk_or_requirement, Requirement):
+                    resource = map[chunk_or_requirement.standard_name]['resource']
+                    if resource.base_name not in previously_merged:
+                        chunks[:0] = resource.get_chunks_by_merging_requirements_from_environment(environment, previously_merged)
+                    previously_merged.append(resource.base_name)
                 else:
-                    merged_content = merged_content[:requirement.insert_location[0]] +\
-                                     merged_content[requirement.insert_location[1]:]
-                previously_merged.append(resource.base_name)
+                    chunks[:0] = [chunk_or_requirement]
 
-            return merged_content
+            return chunks
         else:
-            return self.content
+            return [Chunk(self)]
+
+    def merge_requirements_from_environment(self, environment, previously_merged):
+        chunks = self.get_chunks_by_merging_requirements_from_environment(environment, previously_merged)
+        return ''.join([chunk.content for chunk in chunks])
 
     def map_requirements(self, environment, map, previously_required):
         if self.requirements:
@@ -319,3 +325,25 @@ class Resource:
                         resources_in_path.append(Resource(absolute_file_path))
             resources.extend(resources_in_path)
         return resources if len(resources) > 0 else None
+
+class Chunk():
+    def __init__(self, resource, start=None, end=None):
+        self._resource = resource
+        self._start = start
+        self._end = end
+
+    @property
+    def resource(self):
+        return self._resource
+
+    @property
+    def start(self):
+        return self._start
+
+    @property
+    def end(self):
+        return self._end
+
+    @property
+    def content(self):
+        return self._resource.content[self._start:self._end]
