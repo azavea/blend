@@ -304,7 +304,7 @@ class TestResource(unittest.TestCase):
             os.path.join(self.test_env_dir, 'dir31', 'file3.js'),
             os.path.join(self.test_env_dir, 'dir41', 'file4.js')]
         helpers.clean_up_test_files(paths_to_test_files)
-        helpers.create_test_file_with_content(paths_to_test_files[0], '//= require <file2>\n//= require <file3>\n// This is file 1\n}')
+        helpers.create_test_file_with_content(paths_to_test_files[0], '//= require <file2>\n//= require <file3>\n// This is file 1\n')
         helpers.create_test_file_with_content(paths_to_test_files[1], '//= require <file4>\n// This is file 2\n')
         helpers.create_test_file_with_content(paths_to_test_files[2], '//= require <file4>\n// This is file 3\n')
         helpers.create_test_file_with_content(paths_to_test_files[3], '// This is file 4\n')
