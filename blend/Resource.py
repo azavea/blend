@@ -287,11 +287,11 @@ class Resource:
         """
         resources = []
         for path in environment.paths:
-            resources.extend(Resource.find_all_of_type_in_path(file_type, path))
+            resources.extend(Resource.find_all_of_type_in_path(file_type, path, skip_path=environment.output_path))
         return resources if len(resources) > 0 else None
 
     @staticmethod
-    def find_all_of_type_in_path(file_type, path):
+    def find_all_of_type_in_path(file_type, path, skip_path=None):
         """
         Get a list of Resource instances representing all the files in the specified
         directory (and sub-directories) that have the specified file_type
@@ -301,10 +301,11 @@ class Resource:
         """
         resources = []
         for dir_path, dir_names, file_names in os.walk(path):
-            for file_name in file_names:
-                resource = Resource(os.path.join(dir_path, file_name))
-                if resource.file_type == file_type:
-                    resources.append(resource)
+            if os.path.abspath(dir_path) != os.path.abspath(skip_path):
+                for file_name in file_names:
+                    resource = Resource(os.path.join(dir_path, file_name))
+                    if resource.file_type == file_type:
+                        resources.append(resource)
         return resources
 
     @staticmethod

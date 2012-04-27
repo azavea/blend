@@ -47,9 +47,21 @@ class Environment:
         if 'include_cwd' not in kwargs or ('include_cwd' in kwargs and kwargs['include_cwd']):
             self._paths.append(os.getcwd())
 
+        if 'output_path' in kwargs:
+            self._output_path = kwargs['output_path']
+        else:
+            self._output_path = os.path.join(os.getcwd(), 'output')
+
     @property
     def paths(self):
         """
         An ordered list of paths in which resources will be located.
         """
         return self._paths
+
+    @property
+    def output_path(self):
+        """
+        An ordered list of paths in which resources will be located.
+        """
+        return self._output_path
