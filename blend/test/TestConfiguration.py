@@ -26,6 +26,7 @@ import unittest
 
 from blend import Configuration
 from blend import Analyzer
+from blend.Resource import Resource
 from blend.SizeAnalyzer import SizeAnalyzer
 from blend import Minifier
 from blend.YUICompressorMinifier import YUICompressorMinifier
@@ -49,14 +50,16 @@ class TestConfiguration(unittest.TestCase):
         conf = Configuration()
         analyzer = Analyzer()
         conf.add_analyzer_for_file_type(analyzer, 'javascript')
-        analyzers = conf.get_analyzers_for_file_type('javascript')
+        resource = Resource('file.js')
+        analyzers = conf.get_analyzers_for_resource(resource)
         self.assertListEqual([analyzer], analyzers)
 
     def test_returns_non_when_asking_for_analyzers_for_an_unknown_file_type(self):
         conf = Configuration()
         analyzer = Analyzer()
         conf.add_analyzer_for_file_type(analyzer, 'javascript')
-        analyzers = conf.get_analyzers_for_file_type('some-other-type')
+        resource = Resource('file.foo')
+        analyzers = conf.get_analyzers_for_resource(resource)
         self.assertIsNone(analyzers)
 
     def test_add_analyzer_checks_classes(self):
@@ -82,7 +85,8 @@ class TestConfiguration(unittest.TestCase):
     }
 }""")
         conf = Configuration(config_file_path)
-        actual_analyzers = conf.get_analyzers_for_file_type('javascript')
+        resource = Resource('file.js')
+        actual_analyzers = conf.get_analyzers_for_resource(resource)
         self.assertIsNotNone(actual_analyzers)
         self.assertEqual(1, len(actual_analyzers))
         self.assertIsInstance(actual_analyzers[0], SizeAnalyzer)
@@ -109,3 +113,16 @@ class TestConfiguration(unittest.TestCase):
         conf.set_minifier_for_file_type(minifier, 'javascript')
         analyzers = conf.get_minifier_for_file_type('some-other-type')
         self.assertIsNone(analyzers)
+
+    def test_get_analyzers_for_resource_with_skip_list(self):
+        lib_resource = Resource('lib/jquery.js')
+        src_resource = Resource('src/file.js')
+        conf = Configuration()
+        analyzer = Analyzer()
+        conf.add_analyzer_for_file_type(analyzer, 'javascript', ['lib/*'])
+        self.assertIsNone(conf.get_analyzers_for_resource(lib_resource))
+        self.assertEqual([analyzer], conf.get_analyzers_for_resource(src_resource))
+
+    def test_add_analyzer_for_file_type_raises_when_skip_list_is_a_string(self):
+        conf = Configuration()
+        self.assertRaises(Exception, conf.add_analyzer_for_file_type, Analyzer(), 'javascript', 'something invalid')

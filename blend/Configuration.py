@@ -21,9 +21,11 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
+from fnmatch import fnmatch
 
 import os
 import json
+import types
 
 from Analyzer import Analyzer
 from Minifier import Minifier
@@ -32,6 +34,7 @@ class Configuration():
 
     def __init__(self, config_file_path=None):
         self.analyzers = None
+        self.analyzer_skip_lists = None
         self.minifiers = None
         if config_file_path is not None:
             if not os.path.exists(config_file_path):
@@ -57,21 +60,52 @@ class Configuration():
             m = getattr(m, comp)
         return m
 
-    def add_analyzer_for_file_type(self, analyzer, file_type):
+    def add_analyzer_for_file_type(self, analyzer, file_type, skip_list=None):
         if not isinstance(analyzer, Analyzer):
             raise Exception('You must pass and Analyzer instance')
+        if skip_list is not None and isinstance(skip_list, types.StringTypes):
+            raise Exception('You must pass a list to the skip_list parameter')
         if self.analyzers is None:
             self.analyzers = {}
         if file_type not in self.analyzers:
             self.analyzers[file_type] = []
         if analyzer not in self.analyzers[file_type]:
             self.analyzers[file_type].append(analyzer)
+            if skip_list:
+                if self.analyzer_skip_lists is None:
+                    self.analyzer_skip_lists = {}
+                if analyzer not in self.analyzer_skip_lists:
+                    self.analyzer_skip_lists[analyzer] = {}
+                self.analyzer_skip_lists[analyzer][file_type] = skip_list
 
-    def get_analyzers_for_file_type(self, file_type):
+    def get_analyzers_for_resource(self, resource):
         if self.analyzers is None: return None
 
-        if file_type in self.analyzers:
-            return self.analyzers[file_type]
+        if resource.file_type in self.analyzers:
+            if self.analyzer_skip_lists:
+                analyzers = []
+                for analyzer in self.analyzers[resource.file_type]:
+                    if analyzer in self.analyzer_skip_lists:
+                        skip_lists_for_file_type = self.analyzer_skip_lists[analyzer]
+                        if resource.file_type in skip_lists_for_file_type:
+                            skip_list = skip_lists_for_file_type[resource.file_type]
+                            skip = False
+                            for pattern in skip_list:
+                                if fnmatch(resource.path_to_file, pattern):
+                                    skip = True
+                                    break
+                            if not skip:
+                                analyzers.append(analyzer)
+                        else:
+                            analyzers.append(analyzer)
+                    else:
+                        analyzers.append(analyzer)
+                if len(analyzers) > 0:
+                    return analyzers
+                else:
+                    return None
+            else:
+                return self.analyzers[resource.file_type]
         else:
             return None
 
@@ -90,3 +124,4 @@ class Configuration():
             return self.minifiers[file_type]
         else:
             return None
+
