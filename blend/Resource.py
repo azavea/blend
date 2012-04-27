@@ -326,6 +326,12 @@ class Resource:
             resources.extend(resources_in_path)
         return resources if len(resources) > 0 else None
 
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return self.base_name
+
 class Chunk():
     def __init__(self, resource, start=None, end=None):
         self._resource = resource
@@ -335,6 +341,17 @@ class Chunk():
     @property
     def resource(self):
         return self._resource
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        value = self.resource.base_name
+        if self.start is not None:
+            value = value + ':' + self.start
+        if self.end is not None:
+            value = value + ':' + self.end
+        return value
 
     @property
     def start(self):
