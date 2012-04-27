@@ -207,6 +207,10 @@ class Resource:
         return self._minified
 
     @property
+    def minified_file_name(self):
+        return '%s-min.%s' % (self.base_name, self.extension)
+
+    @property
     def requirements(self):
         """
         The descriptions of the the other resources on which this resource depends.
