@@ -28,6 +28,10 @@ import sys
 import traceback
 from Environment import Environment
 from Resource import Resource
+from Configuration import Configuration
+from JSLintAnalyzer import JSLintAnalyzer
+from YUICompressorMinifier import YUICompressorMinifier
+from blend.Requirement import RequirementNotSatisfiedException
 
 class Application():
     DEFAULT_OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
@@ -42,8 +46,20 @@ class Application():
         self.file_list = file_list
         self.output_dir = output_dir
 
+    def _create_default_configuration(self):
+        config = Configuration()
+        config.add_analyzer_for_file_type(JSLintAnalyzer(), 'javascript', [ os.getcwd() + '/lib/*'])
+        config.set_minifier_for_file_type(YUICompressorMinifier(), 'javascript')
+        config.set_minifier_for_file_type(YUICompressorMinifier(), 'css')
+        return config
+
     def run(self):
         try:
+            self.config = self._create_default_configuration()
+
+            if not os.path.exists(self.output_dir):
+                os.makedirs(self.output_dir)
+
             if len(self.file_list) == 0:
                 resources = Resource.find_all_in_environment(self.environment)
             else:
@@ -56,19 +72,49 @@ class Application():
                         directory, file_name = os.path.split(resource.path_to_file)
 
                         try:
-                            merged_content = resource.merge_requirements_from_environment(self.environment, previously_merged=[])
+                            chunks = resource.get_chunks_by_merging_requirements_from_environment(self.environment, previously_merged=[])
                         except RequirementNotSatisfiedException, rnse:
                             print "A requirement could not be satisfied for %s\n\n%s\n" % (resource.path_to_file, rnse)
-
                             return -1
 
-                        if not os.path.exists(self.output_dir):
-                            os.makedirs(self.output_dir)
-                        f = open(os.path.join(self.output_dir, file_name), 'w')
+                        for chunk in chunks:
+                            analyzers = self.config.get_analyzers_for_resource(chunk.resource)
+                            if analyzers:
+                                for analyzer in analyzers:
+                                    print 'Analysis:%s:%s' % (analyzer.__class__, chunk.resource.path_to_file)
+                                    analysis =  analyzer.analyze(chunk.resource)
+                                    print analysis
+                                    if not analysis.good:
+                                        return -1
+
+                        merged_content = ''.join([chunk.content for chunk in chunks])
+
+                        output_file_name = os.path.join(self.output_dir, file_name)
+                        f = open(output_file_name, 'w')
                         try:
                             f.write(merged_content)
                         finally:
+                            f.flush()
                             f.close()
+
+                        print "Created %s" % output_file_name
+
+                        # TODO: Process chunks to prevent reminification
+                        output_resource = Resource(output_file_name)
+                        minifier = self.config.get_minifier_for_file_type(output_resource.file_type)
+                        if minifier and not output_resource.minified:
+                            minification = minifier.minify(output_resource)
+                            if not minification.good:
+                                print minification
+                                return -1
+                            minified_output_file_path = os.path.join(self.output_dir, output_resource.minified_file_name)
+                            f = open(minified_output_file_path, 'w')
+                            try:
+                                f.write(minification.content)
+                            finally:
+                                f.flush()
+                                f.close()
+
         except Exception:
             traceback.print_exc(file=sys.stderr)
             return -1
