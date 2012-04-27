@@ -221,21 +221,22 @@ class Resource:
             position = 0
 
             for requirement in self.requirements:
-                chunks_and_requirements.append(Chunk(self, position, requirement.insert_location[0]))
+                if (position == 0 and requirement.insert_location[0] > 0) or position != requirement.insert_location[0]:
+                    chunks_and_requirements.append(Chunk(self, position, requirement.insert_location[0]))
                 chunks_and_requirements.append(requirement)
                 position = requirement.insert_location[1]
             if position < len(self.content):
                 chunks_and_requirements.append(Chunk(self, position))
 
             chunks = []
-            for chunk_or_requirement in reversed(chunks_and_requirements):
+            for chunk_or_requirement in chunks_and_requirements:
                 if isinstance(chunk_or_requirement, Requirement):
                     resource = map[chunk_or_requirement.standard_name]['resource']
                     if resource.base_name not in previously_merged:
-                        chunks[:0] = resource.get_chunks_by_merging_requirements_from_environment(environment, previously_merged)
+                        chunks = chunks + resource.get_chunks_by_merging_requirements_from_environment(environment, previously_merged)
                     previously_merged.append(resource.base_name)
                 else:
-                    chunks[:0] = [chunk_or_requirement]
+                    chunks.append(chunk_or_requirement)
 
             return chunks
         else:
