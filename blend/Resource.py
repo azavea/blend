@@ -301,7 +301,7 @@ class Resource:
         """
         resources = []
         for dir_path, dir_names, file_names in os.walk(path):
-            if os.path.abspath(dir_path) != os.path.abspath(skip_path):
+            if skip_path is None or os.path.abspath(dir_path) != os.path.abspath(skip_path):
                 for file_name in file_names:
                     resource = Resource(os.path.join(dir_path, file_name))
                     if resource.file_type == file_type:
