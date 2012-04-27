@@ -54,7 +54,14 @@ class Application():
                 for resource in resources:
                     if resource.requirements is not None:
                         directory, file_name = os.path.split(resource.path_to_file)
-                        merged_content = resource.merge_requirements_from_environment(self.environment, previously_merged=[])
+
+                        try:
+                            merged_content = resource.merge_requirements_from_environment(self.environment, previously_merged=[])
+                        except RequirementNotSatisfiedException, rnse:
+                            print "A requirement could not be satisfied for %s\n\n%s\n" % (resource.path_to_file, rnse)
+
+                            return -1
+
                         if not os.path.exists(self.output_dir):
                             os.makedirs(self.output_dir)
                         f = open(os.path.join(self.output_dir, file_name), 'w')
