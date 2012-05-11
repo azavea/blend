@@ -26,7 +26,7 @@ import optparse
 import os
 import sys
 import traceback
-from Environment import Environment
+from Paths import Paths
 from Resource import Resource
 from Configuration import Configuration
 from JSLintAnalyzer import JSLintAnalyzer
@@ -35,13 +35,13 @@ from blend.Requirement import RequirementNotSatisfiedException
 
 class Application():
     DEFAULT_OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
-    DEFAULT_ENV_PATH_LIST = []
+    DEFAULT_PATH_LIST = []
     DEFAULT_INCLUDE_CWD = True
     DEFAULT_FILE_LIST = []
 
-    def __init__(self, env_path_list=DEFAULT_ENV_PATH_LIST, include_cwd=DEFAULT_INCLUDE_CWD,
+    def __init__(self, path_list=DEFAULT_PATH_LIST, include_cwd=DEFAULT_INCLUDE_CWD,
                  file_list=DEFAULT_FILE_LIST, output_dir=DEFAULT_OUTPUT_DIR):
-        self.environment = Environment(*env_path_list, include_cwd=include_cwd)
+        self.paths = Paths(*path_list, include_cwd=include_cwd)
         self.include_cwd = include_cwd
         self.file_list = file_list
         self.output_dir = output_dir
@@ -61,7 +61,7 @@ class Application():
                 os.makedirs(self.output_dir)
 
             if len(self.file_list) == 0:
-                resources = Resource.find_all_in_environment(self.environment)
+                resources = Resource.find_all_in_paths(self.paths)
             else:
                 resources = []
                 for file_path in self.file_list:
@@ -72,7 +72,7 @@ class Application():
                         directory, file_name = os.path.split(resource.path_to_file)
 
                         try:
-                            chunks = resource.get_chunks_by_merging_requirements_from_environment(self.environment, previously_merged=[])
+                            chunks = resource.get_chunks_by_merging_requirements_from_paths(self.paths, previously_merged=[])
                         except RequirementNotSatisfiedException, rnse:
                             print "A requirement could not be satisfied for %s\n\n%s\n" % (resource.path_to_file, rnse)
                             return -1
@@ -126,9 +126,9 @@ class Application():
         parser = optparse.OptionParser("""usage %prog [options] [file1 [file2 [fileN]]]
 
 If no file arguments are specified, blend searches the specified
-environment paths and processes any and all files that require other files.
+paths and processes any and all files that require other files.
 
-If no environment paths are specified, the current working directory is
+If no paths are specified, the current working directory is
 searched for required files.
 
 If no output path is specified, an output directory is created in the
@@ -140,10 +140,10 @@ current working directory and all outputs are written to that directory.""")
             metavar='OUTPUT',
             help="where the file output will be written")
 
-        parser.add_option("-e", "--environment",
-            default=Application.DEFAULT_ENV_PATH_LIST,
-            dest='environment',
-            metavar='ENV',
+        parser.add_option("-p", "--path",
+            default=Application.DEFAULT_PATH_LIST,
+            dest='path',
+            metavar='PATH',
             action='append',
             help='a directory to be searched for required files (multiple directories can specified by repeating the flag)')
 
@@ -152,13 +152,13 @@ current working directory and all outputs are written to that directory.""")
             dest='skip_cwd',
             metavar='ENV',
             action='store_true',
-            help='exclude the current working directory from the environment')
+            help='exclude the current working directory from the search path')
 
         options, arguments = parser.parse_args()
 
         file_list = arguments or []
 
-        app = Application(options.environment, not options.skip_cwd, file_list, options.output_dir)
+        app = Application(options.path, not options.skip_cwd, file_list, options.output_dir)
         sys.exit(app.run())
 
 if __name__ == '__main__':

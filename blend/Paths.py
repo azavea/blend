@@ -24,7 +24,7 @@
 
 import os
 
-class Environment:
+class Paths:
     """
     A container for all the paths that should be searched when attempting to locate
     required resources.
@@ -40,12 +40,12 @@ class Environment:
             include_cwd -- Boolean (default value is True) defining whether the current
             working directory will be searched after any other specified directories.
         """
-        self._paths = []
+        self._search_paths = []
         for arg in args:
             if arg is not None:
-                self._paths.append(arg)
+                self._search_paths.append(arg)
         if 'include_cwd' not in kwargs or ('include_cwd' in kwargs and kwargs['include_cwd']):
-            self._paths.append(os.getcwd())
+            self._search_paths.append(os.getcwd())
 
         if 'output_path' in kwargs:
             self._output_path = kwargs['output_path']
@@ -53,11 +53,11 @@ class Environment:
             self._output_path = os.path.join(os.getcwd(), 'output')
 
     @property
-    def paths(self):
+    def search_paths(self):
         """
         An ordered list of paths in which resources will be located.
         """
-        return self._paths
+        return self._search_paths
 
     @property
     def output_path(self):

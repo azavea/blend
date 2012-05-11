@@ -24,7 +24,7 @@
 
 from Resource import Resource
 from Requirement import Requirement
-from Environment import Environment
+from Paths import Paths
 from Application import Application
 from Analyzer import Analyzer
 from Analysis import Analysis

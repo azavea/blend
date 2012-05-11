@@ -217,9 +217,9 @@ class Resource:
         """
         return self._requirements
 
-    def get_chunks_by_merging_requirements_from_environment(self, environment, previously_merged):
+    def get_chunks_by_merging_requirements_from_paths(self, paths, previously_merged):
         if self.requirements:
-            map = self.map_requirements(environment, map={}, previously_required=[])
+            map = self.map_requirements(paths, map={}, previously_required=[])
 
             chunks_and_requirements = []
             position = 0
@@ -237,7 +237,7 @@ class Resource:
                 if isinstance(chunk_or_requirement, Requirement):
                     resource = map[chunk_or_requirement.standard_name]['resource']
                     if resource.base_name not in previously_merged:
-                        chunks = chunks + resource.get_chunks_by_merging_requirements_from_environment(environment, previously_merged)
+                        chunks = chunks + resource.get_chunks_by_merging_requirements_from_paths(paths, previously_merged)
                     previously_merged.append(resource.base_name)
                 else:
                     chunks.append(chunk_or_requirement)
@@ -246,16 +246,16 @@ class Resource:
         else:
             return [Chunk(self)]
 
-    def merge_requirements_from_environment(self, environment, previously_merged):
-        chunks = self.get_chunks_by_merging_requirements_from_environment(environment, previously_merged)
+    def merge_requirements_from_paths(self, paths, previously_merged):
+        chunks = self.get_chunks_by_merging_requirements_from_paths(paths, previously_merged)
         return ''.join([chunk.content for chunk in chunks])
 
-    def map_requirements(self, environment, map, previously_required):
+    def map_requirements(self, paths, map, previously_required):
         if self.requirements:
             for requirement in self.requirements:
                 map[requirement.standard_name] = None
                 if requirement.type == 'global':
-                    resources_of_the_same_type = Resource.find_all_of_type_in_environment(self.file_type, environment)
+                    resources_of_the_same_type = Resource.find_all_of_type_in_paths(self.file_type, paths)
                 else: # requirement.type == 'local'
                     resources_of_the_same_type = Resource.find_all_of_type_in_path(self.file_type, os.path.dirname(self.path_to_file))
 
@@ -264,7 +264,7 @@ class Resource:
                         if resource.base_name == requirement.standard_name:
                             new_previously_required = deepcopy(previously_required)
                             new_previously_required.append(requirement.standard_name)
-                            resource.map_requirements(environment, map, new_previously_required)
+                            resource.map_requirements(paths, map, new_previously_required)
 
                             map[requirement.standard_name] = {
                                 'resource': resource,
@@ -272,26 +272,26 @@ class Resource:
                             }
 
                 if not map[requirement.standard_name]:
-                    raise RequirementNotSatisfiedException(requirement, environment)
+                    raise RequirementNotSatisfiedException(requirement, paths)
 
         return map
 
 
 
     @staticmethod
-    def find_all_of_type_in_environment(file_type, environment):
+    def find_all_of_type_in_paths(file_type, paths):
         """
         Get a list of Resource instances representing all the files in the current working
         directory that have the specified file_type
         Arguments:
         file_type -- The string name of the type of file to be found. Can be unknown, javascript, or css
-        environment -- An Environment instance defining where to search for files.
+        paths -- A Paths instance defining where to search for files.
         Remarks:
-        Calls find_all_of_type_in_path for each path in the environment.
+        Calls find_all_of_type_in_path for each path in the paths.
         """
         resources = []
-        for path in environment.paths:
-            resources.extend(Resource.find_all_of_type_in_path(file_type, path, skip_path=environment.output_path))
+        for path in paths.search_paths:
+            resources.extend(Resource.find_all_of_type_in_path(file_type, path, skip_path=paths.output_path))
         return resources if len(resources) > 0 else None
 
     @staticmethod
@@ -313,15 +313,15 @@ class Resource:
         return resources
 
     @staticmethod
-    def find_all_in_environment(environment):
+    def find_all_in_paths(paths):
         """
         Get a list of Resource instances representing all the files in the specified
-        environment that have a processable file type.
+        paths that have a processable file type.
         Arguments:
-        environment -- An Environment instance defining where to search for files.
+        paths -- A Paths instance defining where to search for files.
         """
         resources = []
-        for path in environment.paths:
+        for path in paths.search_paths:
             resources_in_path = []
             for dir_path, dir_names, file_names in os.walk(path):
                 for file_name in file_names:

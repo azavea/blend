@@ -25,7 +25,7 @@
 import unittest
 import tempfile
 
-from blend import Resource, Environment
+from blend import Resource, Paths
 from blend.Requirement import RequirementNotSatisfiedException
 import shutil
 import os

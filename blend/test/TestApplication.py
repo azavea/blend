@@ -42,7 +42,7 @@ class TestApplication(unittest.TestCase):
 
     def test_default_env_is_cwd(self):
         app = Application()
-        self.assertEquals(app.environment.paths, [os.getcwd()])
+        self.assertEquals(app.paths.search_paths, [os.getcwd()])
 
     def test_default_include_cwd_is_true(self):
         app = Application()

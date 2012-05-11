@@ -86,13 +86,13 @@ class Requirement:
         return self._insert_location
 
 class RequirementNotSatisfiedException(Exception):
-    def __init__(self, requirement, environment, *args, **kwargs):
+    def __init__(self, requirement, paths, *args, **kwargs):
         super(RequirementNotSatisfiedException, self).__init__(*args, **kwargs)
         self.requirement = requirement
-        self.environment = environment
+        self.paths = paths
 
     def __str__(self):
         return self.__unicode__()
 
     def __unicode__(self):
-        return "Requirement:\n\t%s (%s)\nSearch paths:\n\t%s" % (self.requirement.name, self.requirement.type, '\t\n'.join(self.environment.paths))
+        return "Requirement:\n\t%s (%s)\nSearch paths:\n\t%s" % (self.requirement.name, self.requirement.type, '\t\n'.join(self.paths.search_paths))

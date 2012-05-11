@@ -29,8 +29,8 @@ Command Line Options
 -o OUTPUT, --output=OUTPUT
 Where the file output will be written
 
--e ENV, --environment=ENV
+-p PATH, --path=PATH
 A directory to be searched for required files (multiple directories can specified by repeating the flag)
 
 -s, --skipcwd
-Exclude the current working directory from the environment
+Exclude the current working directory from the search paths

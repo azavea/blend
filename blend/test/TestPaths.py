@@ -25,26 +25,26 @@
 import unittest
 import os
 
-from blend import Environment
+from blend import Paths
 
-class TestEnvironment(unittest.TestCase):
+class TestPaths(unittest.TestCase):
 
-    def test_environment_has_a_paths_property(self):
-        env = Environment()
-        self.assertNotEqual(None, env.paths)
+    def test_paths_has_a_search_paths_property(self):
+        env = Paths()
+        self.assertNotEqual(None, env.search_paths)
 
     def test_default_path_property_value_is_an_array_containing_cwd(self):
-        env = Environment()
-        self.assertEqual([os.getcwd()], env.paths)
+        env = Paths()
+        self.assertEqual([os.getcwd()], env.search_paths)
 
-    def test_environment_can_be_created_with_paths(self):
-        env = Environment('/tmp/test', '/tmp/lib')
-        self.assertEqual(['/tmp/test', '/tmp/lib', os.getcwd()], env.paths)
+    def test_paths_can_be_created_with_search_paths(self):
+        env = Paths('/tmp/test', '/tmp/lib')
+        self.assertEqual(['/tmp/test', '/tmp/lib', os.getcwd()], env.search_paths)
 
     def test_cwd_can_be_omitted_from_paths(self):
-        env = Environment('/tmp/test', '/tmp/lib', include_cwd = False)
-        self.assertEqual(['/tmp/test', '/tmp/lib'], env.paths)
+        env = Paths('/tmp/test', '/tmp/lib', include_cwd = False)
+        self.assertEqual(['/tmp/test', '/tmp/lib'], env.search_paths)
 
     def test_creating_with_none_results_in_cwd_as_the_only_path(self):
-        env = Environment(None)
-        self.assertEqual([os.getcwd()], env.paths)
+        env = Paths(None)
+        self.assertEqual([os.getcwd()], env.search_paths)
