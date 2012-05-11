@@ -97,6 +97,22 @@ class TestConfiguration(unittest.TestCase):
         self.assertIsInstance(actual_analyzers[0], SizeAnalyzer)
         self.assertIsNotNone(conf.analyzer_skip_lists)
 
+    def test_can_load_minfiers_from_config_file(self):
+        config_file_path = os.path.join(self.test_env_dir, 'blend.config')
+        create_test_file_with_content(config_file_path,
+            """{
+                "minifiers": {
+                    "javascript": {
+                        "name": "blend.YUICompressorMinifier"
+                    }
+                }
+            }""")
+        conf = Configuration(config_file_path)
+        resource = Resource('file.js')
+        actual_minifier = conf.get_minifier_for_file_type(resource.file_type)
+        self.assertIsNotNone(actual_minifier)
+        self.assertIsInstance(actual_minifier, YUICompressorMinifier)
+
     def test_can_add_minifier_for_filetype(self):
         conf = Configuration()
         minifier = Minifier()

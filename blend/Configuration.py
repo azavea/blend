@@ -44,6 +44,7 @@ class Configuration():
                 configuration_dict = json.load(f)
             finally:
                 f.close()
+
             if 'analyzers' in configuration_dict:
                 analyzers_dict = configuration_dict['analyzers']
                 for file_type in analyzers_dict.iterkeys():
@@ -54,6 +55,13 @@ class Configuration():
                             self.add_analyzer_for_file_type(analyzer_class(), file_type, analyzer_dict['skip_list'])
                         else:
                             self.add_analyzer_for_file_type(analyzer_class(), file_type)
+
+            if 'minifiers' in configuration_dict:
+                minifiers_dict = configuration_dict['minifiers']
+                for file_type in minifiers_dict.iterkeys():
+                    minifier_dict = minifiers_dict[file_type]
+                    minifier_class =  self._get_class(minifier_dict['name'])
+                    self.set_minifier_for_file_type(minifier_class(), file_type)
 
     def _get_class(self, kls):
         parts = kls.split('.')
