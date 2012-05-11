@@ -80,7 +80,12 @@ class TestConfiguration(unittest.TestCase):
 """{
     "analyzers": {
         "javascript": [
-            "blend.SizeAnalyzer"
+            {
+                "name": "blend.SizeAnalyzer",
+                "skip_list": [
+                    "bin"
+                ]
+            }
         ]
     }
 }""")
@@ -90,6 +95,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertIsNotNone(actual_analyzers)
         self.assertEqual(1, len(actual_analyzers))
         self.assertIsInstance(actual_analyzers[0], SizeAnalyzer)
+        self.assertIsNotNone(conf.analyzer_skip_lists)
 
     def test_can_add_minifier_for_filetype(self):
         conf = Configuration()
@@ -115,8 +121,8 @@ class TestConfiguration(unittest.TestCase):
         self.assertIsNone(analyzers)
 
     def test_get_analyzers_for_resource_with_skip_list(self):
-        lib_resource = Resource('lib/jquery.js')
-        src_resource = Resource('src/file.js')
+        lib_resource = Resource(os.path.join(os.getcwd(), 'lib', 'jquery.js'))
+        src_resource = Resource(os.path.join(os.getcwd(), 'src', 'file.js'))
         conf = Configuration()
         analyzer = Analyzer()
         conf.add_analyzer_for_file_type(analyzer, 'javascript', ['lib/*'])

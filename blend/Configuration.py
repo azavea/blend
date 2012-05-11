@@ -45,12 +45,15 @@ class Configuration():
             finally:
                 f.close()
             if 'analyzers' in configuration_dict:
-                analyzer_dict = configuration_dict['analyzers']
-                for file_type in analyzer_dict.iterkeys():
-                    analyzer_name_list = analyzer_dict[file_type]
-                    for analyzer_name in analyzer_name_list:
-                        analyzer_class = self._get_class(analyzer_name)
-                        self.add_analyzer_for_file_type(analyzer_class(), file_type)
+                analyzers_dict = configuration_dict['analyzers']
+                for file_type in analyzers_dict.iterkeys():
+                    analyzer_list = analyzers_dict[file_type]
+                    for analyzer_dict in analyzer_list:
+                        analyzer_class = self._get_class(analyzer_dict['name'])
+                        if 'skip_list' in analyzer_dict:
+                            self.add_analyzer_for_file_type(analyzer_class(), file_type, analyzer_dict['skip_list'])
+                        else:
+                            self.add_analyzer_for_file_type(analyzer_class(), file_type)
 
     def _get_class(self, kls):
         parts = kls.split('.')
@@ -91,7 +94,11 @@ class Configuration():
                             skip_list = skip_lists_for_file_type[resource.file_type]
                             skip = False
                             for pattern in skip_list:
-                                if fnmatch(resource.path_to_file, pattern):
+                                if  os.path.isabs(pattern):
+                                    full_pattern = pattern
+                                else:
+                                    full_pattern = os.path.join(os.getcwd(), pattern)
+                                if fnmatch(resource.path_to_file, full_pattern):
                                     skip = True
                                     break
                             if not skip:

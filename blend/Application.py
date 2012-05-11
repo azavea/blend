@@ -48,7 +48,7 @@ class Application():
 
     def _create_default_configuration(self):
         config = Configuration()
-        config.add_analyzer_for_file_type(JSLintAnalyzer(), 'javascript', [ os.getcwd() + '/lib/*'])
+        config.add_analyzer_for_file_type(JSLintAnalyzer(), 'javascript', [os.path.join('lib', '*')])
         config.set_minifier_for_file_type(YUICompressorMinifier(), 'javascript')
         config.set_minifier_for_file_type(YUICompressorMinifier(), 'css')
         return config
