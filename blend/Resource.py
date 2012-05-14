@@ -25,6 +25,7 @@
 import os
 import re
 from copy import deepcopy
+import sys
 
 from Requirement import Requirement, RequirementNotSatisfiedException
 
@@ -82,32 +83,25 @@ class Resource:
             return
 
         if self._file_type == 'javascript':
-            require_re = re.compile(r'[ \t]*//=[ \t]+require[ \t]+([<"])(\S+)[>"][ \t]*\n?')
+            require_re = re.compile(r'[ \t]*//=[ \t]*require[ \t]+(\S+)[ \t]*\n?')
         else: # 'css'
-            require_re = re.compile(r'@import url\((?P<import_punc>")(?P<import_match>\S+)\.\S+"\)|[ \t]*/\*=[ \t]+require[ \t]+(?P<require_punc>[<"])(?P<require_match>\S+)[>"][ \t]*\*/\n?')
+            require_re = re.compile(r'@import url\(\"(?P<import_match>\S+)\.\S+"\)|[ \t]*/\*=[ \t]*require[ \t]+(?P<require_match>\S+)[ \t]*\*/\n?')
 
         # This loop expects each match to have 2 groups. The first group captures the
         # punctuation mark around the file name and the second captures the name itself
         for result in require_re.finditer(self._content):
             if self._file_type == 'javascript':
-                punc = result.groups()[0]
-                name = str(result.groups()[1])
+                name = str(result.groups()[0])
             else:
-                punc = result.group('import_punc') or result.group('require_punc')
                 if result.group('import_match') is not None:
                     name = str(result.group('import_match'))
                 else:
                     name = str(result.group('require_match'))
 
-            if punc == '<':
-                type = 'global'
-            else:
-                type = 'local'
-
             insert_position = (result.start(), result.end())
             if self._requirements is None:
                 self._requirements = []
-            self._requirements.append(Requirement(name, type, insert_position))
+            self._requirements.append(Requirement(name, insert_position))
 
     @staticmethod
     def _parse_extension_and_file_type(path_to_file):
@@ -250,26 +244,63 @@ class Resource:
         chunks = self.get_chunks_by_merging_requirements_from_paths(paths, previously_merged)
         return ''.join([chunk.content for chunk in chunks])
 
+    def distance_to_file(self, path2):
+        abspath1 = os.path.abspath(self.path_to_file)
+        abspath2 = os.path.abspath(path2)
+
+        # If the files are in the same directory, return the smallest possible
+        # integer as the distance.
+        if os.path.dirname(abspath1) == os.path.dirname(abspath2):
+            return -1 * sys.maxint
+
+        downward_distance = 0
+        dir2_head = os.path.dirname(abspath2)
+        dir2_tail = None
+        while dir2_tail != '':
+            dir1_head = os.path.dirname(os.path.abspath(self.path_to_file))
+            dir1_tail = None
+            upward_distance = 0
+            while dir1_tail != '':
+                if dir2_head == dir1_head:
+                    # Lower distance is always better, and downward is always preferable to upward.
+                    # The weight of 100000 applied to the upward distance is arbitrary, but practically
+                    # ensures that a downward match always has a lower distance in all practical cases.
+                    return (-1 * sys.maxint) + downward_distance + (upward_distance * 100000)
+                dir1_head, dir1_tail = os.path.split(dir1_head)
+                upward_distance += 1
+            dir2_head, dir2_tail = os.path.split(dir2_head)
+            downward_distance += 1
+
+        # If the two paths do not share anything in common, return
+        # the largest possible distance.
+        return sys.maxint
+
     def map_requirements(self, paths, map, previously_required):
         if self.requirements:
             for requirement in self.requirements:
                 map[requirement.standard_name] = None
-                if requirement.type == 'global':
-                    resources_of_the_same_type = Resource.find_all_of_type_in_paths(self.file_type, paths)
-                else: # requirement.type == 'local'
-                    resources_of_the_same_type = Resource.find_all_of_type_in_path(self.file_type, os.path.dirname(self.path_to_file))
+
+                resources_of_the_same_type = Resource.find_all_of_type_in_paths(self.file_type, paths)
 
                 if resources_of_the_same_type is not None:
+                    matching_resources = []
                     for resource in resources_of_the_same_type:
                         if resource.base_name == requirement.standard_name:
-                            new_previously_required = deepcopy(previously_required)
-                            new_previously_required.append(requirement.standard_name)
-                            resource.map_requirements(paths, map, new_previously_required)
+                            matching_resources.append(resource)
 
-                            map[requirement.standard_name] = {
-                                'resource': resource,
-                                'previously_required': deepcopy(previously_required)
-                            }
+                    matching_resources_in_order = sorted(matching_resources,
+                        key=lambda item: self.distance_to_file(item.path_to_file))
+
+                    if len(matching_resources_in_order) > 0:
+                        resource = matching_resources_in_order[0]
+                        new_previously_required = deepcopy(previously_required)
+                        new_previously_required.append(requirement.standard_name)
+                        resource.map_requirements(paths, map, new_previously_required)
+
+                        map[requirement.standard_name] = {
+                            'resource': resource,
+                            'previously_required': deepcopy(previously_required)
+                        }
 
                 if not map[requirement.standard_name]:
                     raise RequirementNotSatisfiedException(requirement, paths)

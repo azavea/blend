@@ -74,9 +74,9 @@ class TestApplication(unittest.TestCase):
             os.path.join(self.test_env_dir, 'dir2', 'file2.js')]
         helpers.clean_up_test_files(paths_to_test_files)
         helpers.create_test_files(paths_to_test_files)
-        helpers.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require <file2>')
+        helpers.create_test_file_with_content(paths_to_test_files[0], '// This is file 1\n//= require file2')
         helpers.create_test_file_with_content(paths_to_test_files[1], '// This is file 2')
-        app = Application(env_path_list=[self.test_env_dir], file_list=[paths_to_test_files[0]])
+        app = Application(path_list=[self.test_env_dir], file_list=[paths_to_test_files[0]])
         self.assertEqual(0, app.run())
         helpers.clean_up_test_files(paths_to_test_files)
 
