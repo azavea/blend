@@ -114,7 +114,7 @@ class JSLintAnalyzer(Analyzer):
         try:
             js_lint_proc = subprocess.Popen(self._js_lint_proc_args, -1, None, subprocess.PIPE,
                 subprocess.PIPE, subprocess.PIPE)
-            js_lint_proc_output = js_lint_proc.communicate(resource.content)
+            js_lint_proc_outputs = js_lint_proc.communicate(resource.content)
         except Exception as e:
             if analysis.errors is None:
                 analysis.errors = []
@@ -126,17 +126,18 @@ class JSLintAnalyzer(Analyzer):
             if analysis.errors is None:
                 analysis.errors = []
             analysis.errors.append('The JSLint process exited with return code %d\nArguments: %s\n Output: %s'
-                % (js_lint_proc.returncode, self._js_lint_proc_args, js_lint_proc_output))
+                % (js_lint_proc.returncode, self._js_lint_proc_args, js_lint_proc_outputs))
             return analysis
 
         analysis.mark_as_good() # Assume that JSLint produced no complaints until parsing one from the process output
 
-        js_lint_complaints = js_lint_proc_output[0].split("Lint at ")
-        for complaint in js_lint_complaints:
-            if len(complaint.strip()):
-                analysis.mark_as_bad()
-                js_lint_complaint = JsLintComplaint(complaint)
-                analysis.add_error(str(js_lint_complaint))
+        for js_lint_proc_output in js_lint_proc_outputs:
+            js_lint_complaints = js_lint_proc_output.split("Lint at ")
+            for complaint in js_lint_complaints:
+                if len(complaint.strip()):
+                    analysis.mark_as_bad()
+                    js_lint_complaint = JsLintComplaint(complaint)
+                    analysis.add_error(str(js_lint_complaint))
 
         return analysis
 
