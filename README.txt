@@ -2,35 +2,119 @@
 Blend
 =====
 
-A cross-platform tool for merging and processing client-side assets for web sites and web applications.
+Merge, analyze, and optimize client-side assets for web applications and static web sites.
 
-Introduction
-============
+Example
+=======
 
-Blend is designed to mimic the asset pipeline introduced in Ruby on Rails 3.1 (http://guides.rubyonrails.org/asset_pipeline.html) with two key differences:
+Given the following directory structure::
 
-    - Written as a Python module
-    - Works with any web framework, or no framework at all
+    project
+      lib
+        jquery-1.7.2.min.js
+      src
+        app.js
+        components
+          menu.js
+        common
+          helpers.js
 
-Installation
-============
+And the following ``app.js``::
 
-- Download and extract the package
-- Run python setup.py install
+    /* app.js */
+
+    //= require jquery
+    //= require menu
+    var app = {};
+
+And the following ``menu.js``::
+
+    /* menu.js */
+
+    //= require jquery
+    //= require helpers
+    var menu = {};
+
+And the following ``helpers.js``::
+
+    /* helpers.js */
+
+    var helpers = {};
+
+Running ``blend`` with no arguments from the ``project`` directory will produce this directory structure::
+
+    project
+      lib
+        jquery-1.7.2.min.js
+      output
+        app.js
+        app.min.js
+        menu.js
+        menu.min.js
+      src
+        app.js
+        components
+          menu.js
+        common
+          helpers.js
+
+Where ``app.js`` has the following content::
+
+    /* app.js */
+
+    /* ... the minified JQuery code, included only once */
+    var helpers = {};
+    var menu = {}
+    var app = {};
 
 Usage
 =====
 
-The ``blend`` command line tool is designed to process a directory full of files or individually specified files.
+blend [options] [file1 [file2 [fileN]]]
 
 Command Line Options
-====================
+--------------------
 
--o OUTPUT, --output=OUTPUT
-Where the file output will be written
+Output
+~~~~~~
+``-o OUTPUT, --output=OUTPUT``
 
--p PATH, --path=PATH
-A directory to be searched for required files (multiple directories can specified by repeating the flag)
+Where the file output will be written. The default is a directory at the root of the
+project directory named ``output``
 
--s, --skipcwd
-Exclude the current working directory from the search paths
+Path
+~~~~~
+``-p PATH, --path=PATH``
+
+A directory to be searched for required files. Multiple directories can specified by
+repeating the flag. If you do not
+specify any directory with the PATH flag then only the working directory will be searched for required files.
+
+Skip Working Directory
+~~~~~~~~~~~~~~~~~~~~~~
+``-s, --skipcwd``
+
+Exclude the current working directory from the requirement search paths.
+
+
+Installation
+============
+
+From the Python Package Index
+-----------------------------
+::
+
+    pip install blend
+
+From Source
+-----------
+::
+
+    git clone git://github.com/azavea/blend.git
+    cd blend
+    python setup.py install
+
+License
+============
+
+MIT
