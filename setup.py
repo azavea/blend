@@ -57,7 +57,7 @@ setup(
     url='http://github.com/azavea/blend',
     license='LICENSE.txt',
     description='A cross-platform tool for merging and processing client-side assets for a web application.',
-    long_description=read('README.txt'),
+    long_description=read('README.rst'),
     cmdclass = { 'test': RunTests },
     keywords = "javascript css html build",
     classifiers=[
