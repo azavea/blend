@@ -54,6 +54,13 @@ setup(
     author_email='jwalgran@azavea.com',
     packages=['blend', 'blend.test'],
     scripts=['bin/blend'],
+    package_data={'blend': [
+        'lib/js.jar',
+        'lib/js_LICENSE.TXT',
+        'lib/jslint.js',
+        'lib/yuicompressor-2.4.6.jar',
+        'lib/yuicompressor_LICENSE.TXT'
+    ]},
     url='http://github.com/azavea/blend',
     license='LICENSE.txt',
     description='A cross-platform tool for merging and processing client-side assets for a web application.',
