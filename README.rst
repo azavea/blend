@@ -116,7 +116,7 @@ From Source
 
 Documentation
 =============
-http://azavea-blend.readthedocs.org/en/latest/
+http://azavea-blend.readthedocs.org
 
 License
 ============
