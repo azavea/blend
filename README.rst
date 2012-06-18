@@ -114,6 +114,10 @@ From Source
     cd blend
     python setup.py install
 
+Documentation
+=============
+http://azavea-blend.readthedocs.org/en/latest/
+
 License
 ============
 
