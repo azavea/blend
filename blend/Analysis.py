@@ -24,5 +24,6 @@
 
 from Result import Result
 
+
 class Analysis(Result):
     pass

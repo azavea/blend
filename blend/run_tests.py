@@ -47,4 +47,3 @@ if __name__ == "__main__":
     results = unittest.TextTestRunner(verbosity=2).run(suite)
     # Return the failure count as the exit code of the process. No failures = clean exit.
     sys.exit(len(results.failures))
-

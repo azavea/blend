@@ -25,6 +25,7 @@
 from Resource import Resource
 from Analysis import Analysis
 
+
 class Analyzer():
 
     def analyze(self, resource):

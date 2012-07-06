@@ -31,6 +31,7 @@ import os
 import sys
 from blend import Application
 
+
 class TestApplication(unittest.TestCase):
 
     def setUp(self):

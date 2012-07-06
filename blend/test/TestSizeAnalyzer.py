@@ -29,6 +29,7 @@ import tempfile
 from helpers import create_test_file_with_content
 from blend import SizeAnalyzer, Resource
 
+
 class TestSizeAnalyzer(unittest.TestCase):
 
     def setUp(self):

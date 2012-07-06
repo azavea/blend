@@ -24,6 +24,7 @@
 
 from Result import Result
 
+
 class Minification(Result):
     def __init__(self):
         super(Minification, self).__init__()

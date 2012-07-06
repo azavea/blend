@@ -29,6 +29,7 @@ import tempfile
 from helpers import create_test_file_with_content
 from blend import JSLintAnalyzer, Resource
 
+
 class TestJSLintAnalyzer(unittest.TestCase):
 
     def setUp(self):
@@ -44,7 +45,7 @@ class TestJSLintAnalyzer(unittest.TestCase):
 
     def make_a_js_file_with_lint(self):
         test_file_path = os.path.join(self.test_env_dir, 'test.js')
-        create_test_file_with_content(test_file_path, 'answer = 42;') # missing 'var'
+        create_test_file_with_content(test_file_path, 'answer = 42;')  # missing 'var'
         return test_file_path
 
     def test_analysis_fails_when_lib_dir_is_not_found(self):

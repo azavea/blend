@@ -24,6 +24,7 @@
 
 from Analyzer import Analyzer
 
+
 class SizeAnalyzer(Analyzer):
 
     def analyze(self, resource):
@@ -35,7 +36,7 @@ class SizeAnalyzer(Analyzer):
             line_noun = 'line'
         else:
             line_noun = 'lines'
-        char_count = reduce(lambda count, x: count+len(x), lines, 0)
+        char_count = reduce(lambda count, x: count + len(x), lines, 0)
         analysis.add_message('%s: %d characters in %d %s for %d bytes' % (resource.path_to_file, char_count, len(lines), line_noun, resource.size))
 
         return analysis

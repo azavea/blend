@@ -25,6 +25,7 @@
 from Resource import Resource
 from Minification import Minification
 
+
 class Minifier():
 
     def minify(self, resource):

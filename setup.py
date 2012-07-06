@@ -28,8 +28,10 @@ import subprocess
 from distutils.core import setup, Command
 import setuptools
 
+
 def read(filename):
     return open(os.path.join(os.path.dirname(__file__), filename)).read()
+
 
 class RunTests(Command):
     description = "Run the unit test suite for blend."
@@ -65,8 +67,8 @@ setup(
     license='LICENSE.txt',
     description='A cross-platform tool for merging and processing client-side assets for a web application.',
     long_description=read('README.rst'),
-    cmdclass = { 'test': RunTests },
-    keywords = "javascript css html build",
+    cmdclass={'test': RunTests},
+    keywords="javascript css html build",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

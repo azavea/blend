@@ -26,7 +26,6 @@ import unittest
 import tempfile
 
 from blend import Resource, Paths
-from blend.Requirement import RequirementNotSatisfiedException
 import shutil
 import os
 import helpers
@@ -104,7 +103,7 @@ class TestResource(unittest.TestCase):
         for test_file_path, expected_base_name in test_file_paths_and_expected_base_names:
             resource = Resource(test_file_path)
             self.assertEqual(expected_base_name, resource.base_name, 'Expected the base_name of "' +
-                test_file_path + '" to be "'+ expected_base_name + '" and not "' + resource.base_name + '"')
+                test_file_path + '" to be "' + expected_base_name + '" and not "' + resource.base_name + '"')
 
     def test_find_all_javascript_resources_in_the_paths(self):
         paths_to_test_files = [os.path.join(self.test_env_dir, 'test.js'), os.path.join(self.test_env_dir, 'test.css'),
@@ -174,9 +173,9 @@ class TestResource(unittest.TestCase):
         self.assertTrue(resource.content == content)
         self.assertEqual(2, len(resource.requirements))
         self.assertEqual('jquery', resource.requirements[0].name)
-        self.assertEqual((0,19), resource.requirements[0].insert_location)
+        self.assertEqual((0, 19), resource.requirements[0].insert_location)
         self.assertEqual('openlayers', resource.requirements[1].name)
-        self.assertEqual((32,55), resource.requirements[1].insert_location)
+        self.assertEqual((32, 55), resource.requirements[1].insert_location)
         helpers.clean_up_test_files(path_to_test_file)
 
     def test_css_import_statements_found_as_requirements(self):
@@ -188,7 +187,7 @@ class TestResource(unittest.TestCase):
         self.assertTrue(resource.content == content)
         self.assertEqual(1, len(resource.requirements))
         self.assertEqual('something', resource.requirements[0].name)
-        self.assertEqual((22,50), resource.requirements[0].insert_location)
+        self.assertEqual((22, 50), resource.requirements[0].insert_location)
 
     def test_css_require_comments_found_as_requirements(self):
         path_to_test_file = os.path.join(self.test_env_dir, 'test.css')
@@ -199,7 +198,7 @@ class TestResource(unittest.TestCase):
         self.assertTrue(resource.content == content)
         self.assertEqual(1, len(resource.requirements))
         self.assertEqual('something', resource.requirements[0].name)
-        self.assertEqual((21,47), resource.requirements[0].insert_location)
+        self.assertEqual((21, 47), resource.requirements[0].insert_location)
 
     def test_merge_requirements_in_global_path(self):
         paths_to_test_files = [
@@ -232,7 +231,6 @@ class TestResource(unittest.TestCase):
         self.assertEqual('// This is file 1\n// This is LOCAL file 2', actual_merged_content)
 
         helpers.clean_up_test_files(paths_to_test_files)
-
 
     def test_merge_js_requirements_favors_closer_files(self):
         paths_to_test_files = [

@@ -29,6 +29,7 @@ import subprocess
 from Analyzer import Analyzer
 from helpers import first_file_name_in_path_matching_regex
 
+
 class JsLintComplaint(object):
     def __init__(self, complaint):
         lines = complaint.split('\n')
@@ -66,6 +67,7 @@ class JsLintComplaint(object):
                 return 'Line %d - %s' % (self.line_number, self.complaint)
         else:
             return self.complaint
+
 
 class JSLintAnalyzer(Analyzer):
 
@@ -122,14 +124,14 @@ class JSLintAnalyzer(Analyzer):
             return analysis
 
         # The JSLint process returns 1 if it finds lint
-        if (js_lint_proc.returncode != 0 and js_lint_proc.returncode != 1):
+        if js_lint_proc.returncode != 0 and js_lint_proc.returncode != 1:
             if analysis.errors is None:
                 analysis.errors = []
             analysis.errors.append('The JSLint process exited with return code %d\nArguments: %s\n Output: %s'
                 % (js_lint_proc.returncode, self._js_lint_proc_args, js_lint_proc_outputs))
             return analysis
 
-        analysis.mark_as_good() # Assume that JSLint produced no complaints until parsing one from the process output
+        analysis.mark_as_good()  # Assume that JSLint produced no complaints until parsing one from the process output
 
         for js_lint_proc_output in js_lint_proc_outputs:
             js_lint_complaints = js_lint_proc_output.split("Lint at ")
@@ -140,4 +142,3 @@ class JSLintAnalyzer(Analyzer):
                     analysis.add_error(str(js_lint_complaint))
 
         return analysis
-

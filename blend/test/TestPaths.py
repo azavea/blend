@@ -27,6 +27,7 @@ import os
 
 from blend import Paths
 
+
 class TestPaths(unittest.TestCase):
 
     def test_paths_has_a_search_paths_property(self):
@@ -42,7 +43,7 @@ class TestPaths(unittest.TestCase):
         self.assertEqual(['/tmp/test', '/tmp/lib', os.getcwd()], env.search_paths)
 
     def test_cwd_can_be_omitted_from_paths(self):
-        env = Paths('/tmp/test', '/tmp/lib', include_cwd = False)
+        env = Paths('/tmp/test', '/tmp/lib', include_cwd=False)
         self.assertEqual(['/tmp/test', '/tmp/lib'], env.search_paths)
 
     def test_creating_with_none_results_in_cwd_as_the_only_path(self):

@@ -23,15 +23,9 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 
 import unittest
-import tempfile
-
-from blend import Resource, Paths
-from blend.Requirement import RequirementNotSatisfiedException
-import shutil
-import os
-import helpers
 
 from blend import Result
+
 
 class TestResult(unittest.TestCase):
     """Asserts that the properties and methods of the Result class behave correctly."""
@@ -54,11 +48,11 @@ class TestResult(unittest.TestCase):
         self.result.add_error("error")
         self.assertIsNone(self.result.warnings, "Expected adding a None warning to not add an item to Result.warnings")
 
-    def test_adding_none_to_messages_does_not_create_a_message(self):
+    def test_adding_none_to_error_does_not_create_a_message(self):
         self.result.add_message("message")
         self.result.add_warning("warning")
         self.result.add_error(None)
-        self.assertIsNone(self.result.errors, "Expected adding a None message to not add an item to Result.messages")
+        self.assertIsNone(self.result.errors, "Expected adding a None error to not add an item to Result.errors")
 
     def test_errors_warnings_and_messages_as_string_with_one_of_each(self):
         self.result.add_message("message")

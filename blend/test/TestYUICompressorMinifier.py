@@ -29,6 +29,7 @@ import tempfile
 from helpers import create_test_file_with_content
 from blend import YUICompressorMinifier, Resource
 
+
 class TestYUICompressorMinifier(unittest.TestCase):
 
     def setUp(self):
@@ -59,7 +60,7 @@ class TestYUICompressorMinifier(unittest.TestCase):
         minification = yuic.minify(test_resource)
         self.assertFalse(minification.good, 'Expected the minification to be bad since the tools could not be found')
         self.assertEquals(1, len(minification.errors))
-        self.assertEquals('A YUI Compressor .jar file could not be found in %s.' %  invalid_lib_path, minification.errors[0])
+        self.assertEquals('A YUI Compressor .jar file could not be found in %s.' % invalid_lib_path, minification.errors[0])
 
     def test_minifying_an_empty_resource_returns_empty_minification_content(self):
         test_resource = Resource(self.make_an_empty_js_file())
@@ -88,7 +89,7 @@ class TestYUICompressorMinifier(unittest.TestCase):
 
     def test_compressor_failure(self):
         test_resource = Resource(self.make_a_js_file(
-            content='var obj = { function: "failure" }')) # 'function' is not a legal property name
+            content='var obj = { function: "failure" }'))  # 'function' is not a legal property name
         yuic = YUICompressorMinifier()
         minification = yuic.minify(test_resource)
         self.assertFalse(minification.good)

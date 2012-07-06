@@ -37,6 +37,7 @@ import tempfile
 
 from helpers import clean_output, create_test_file_with_content
 
+
 class TestConfiguration(unittest.TestCase):
 
     def setUp(self):

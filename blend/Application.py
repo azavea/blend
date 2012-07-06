@@ -33,6 +33,7 @@ from JSLintAnalyzer import JSLintAnalyzer
 from YUICompressorMinifier import YUICompressorMinifier
 from blend.Requirement import RequirementNotSatisfiedException
 
+
 class Application():
     DEFAULT_OUTPUT_DIR = os.path.join(os.getcwd(), 'output')
     DEFAULT_PATH_LIST = []
@@ -82,7 +83,7 @@ class Application():
                             if analyzers:
                                 for analyzer in analyzers:
                                     print 'Analysis:%s:%s' % (analyzer.__class__, chunk.resource.path_to_file)
-                                    analysis =  analyzer.analyze(chunk.resource)
+                                    analysis = analyzer.analyze(chunk.resource)
                                     print analysis
                                     if not analysis.good:
                                         return -1

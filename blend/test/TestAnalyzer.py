@@ -25,6 +25,7 @@
 import unittest
 from blend import Analyzer, Analysis, Resource
 
+
 class TestAnalyzer(unittest.TestCase):
 
     def setUp(self):

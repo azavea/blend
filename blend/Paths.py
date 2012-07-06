@@ -24,6 +24,7 @@
 
 import os
 
+
 class Paths:
     """
     A container for all the paths that should be searched when attempting to locate

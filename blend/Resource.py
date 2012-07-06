@@ -29,6 +29,7 @@ import sys
 
 from Requirement import Requirement, RequirementNotSatisfiedException
 
+
 class Resource:
     """
     Representation of a file on disk
@@ -84,7 +85,7 @@ class Resource:
 
         if self._file_type == 'javascript':
             require_re = re.compile(r'[ \t]*//=[ \t]*require[ \t]+(\S+)[ \t]*\n?')
-        else: # 'css'
+        else:  # 'css'
             require_re = re.compile(r'@import url\(\"(?P<import_match>\S+)\.\S+"\)|[ \t]*/\*=[ \t]*require[ \t]+(?P<require_match>\S+)[ \t]*\*/\n?')
 
         # This loop expects each match to have 2 groups. The first group captures the
@@ -132,7 +133,7 @@ class Resource:
         path_to_file -- The full path to a file that may or may not exist.
         """
         directory, file = os.path.split(path_to_file)
-        name, dot, extension =  file.rpartition('.')
+        name, dot, extension = file.rpartition('.')
         lower_name = name.lower()
         minified = False
         if lower_name[-4:] == '-min' or lower_name[-4:] == '.min':
@@ -307,8 +308,6 @@ class Resource:
 
         return map
 
-
-
     @staticmethod
     def find_all_of_type_in_paths(file_type, paths):
         """
@@ -368,6 +367,7 @@ class Resource:
 
     def __unicode__(self):
         return self.base_name
+
 
 class Chunk():
     def __init__(self, resource, start=None, end=None):

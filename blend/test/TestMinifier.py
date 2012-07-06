@@ -25,6 +25,7 @@
 import unittest
 from blend import Minifier, Resource
 
+
 class TestMinifier(unittest.TestCase):
 
     def setUp(self):

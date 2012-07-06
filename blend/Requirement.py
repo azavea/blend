@@ -22,11 +22,12 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 
+
 class Requirement:
     """
     Represents the a dependency that one Resource has on another.
     """
-    def __init__(self, name, insert_location = 0):
+    def __init__(self, name, insert_location=0):
         """
         Arguments:
         name -- The string name of the required resource
@@ -68,6 +69,7 @@ class Requirement:
         that will be replaced by the content of the required resource.
         """
         return self._insert_location
+
 
 class RequirementNotSatisfiedException(Exception):
     def __init__(self, requirement, paths, *args, **kwargs):

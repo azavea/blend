@@ -26,6 +26,7 @@ import unittest
 
 from blend import Requirement
 
+
 class TestRequirement(unittest.TestCase):
 
     def test_requirement_must_be_created_with_a_name(self):
@@ -44,8 +45,8 @@ class TestRequirement(unittest.TestCase):
     def test_requirement_takes_insert_location_as_an_optional_parameter(self):
         requirement = Requirement('name', 1)
         self.assertEqual(1, requirement.insert_location)
-        requirement = Requirement('name', (10,22))
-        self.assertEqual((10,22), requirement.insert_location)
+        requirement = Requirement('name', (10, 22))
+        self.assertEqual((10, 22), requirement.insert_location)
 
     def test_insert_location_must_not_be_a_string(self):
         self.assertRaises(Exception, Requirement, 'name', 'some string')

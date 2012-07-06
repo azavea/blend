@@ -27,8 +27,8 @@ import re
 import subprocess
 
 from Minifier import Minifier
-from Minification import Minification
 from helpers import first_file_name_in_path_matching_regex
+
 
 class YUICompressorMinifier(Minifier):
 

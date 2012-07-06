@@ -30,6 +30,7 @@ import types
 from Analyzer import Analyzer
 from Minifier import Minifier
 
+
 class Configuration():
 
     def __init__(self, config_file_path=None):
@@ -60,13 +61,13 @@ class Configuration():
                 minifiers_dict = configuration_dict['minifiers']
                 for file_type in minifiers_dict.iterkeys():
                     minifier_dict = minifiers_dict[file_type]
-                    minifier_class =  self._get_class(minifier_dict['name'])
+                    minifier_class = self._get_class(minifier_dict['name'])
                     self.set_minifier_for_file_type(minifier_class(), file_type)
 
     def _get_class(self, kls):
         parts = kls.split('.')
         module = ".".join(parts[:-1])
-        m = __import__( module )
+        m = __import__(module)
         for comp in parts[1:]:
             m = getattr(m, comp)
         return m
@@ -90,7 +91,8 @@ class Configuration():
                 self.analyzer_skip_lists[analyzer][file_type] = skip_list
 
     def get_analyzers_for_resource(self, resource):
-        if self.analyzers is None: return None
+        if self.analyzers is None:
+            return None
 
         if resource.file_type in self.analyzers:
             if self.analyzer_skip_lists:
@@ -139,4 +141,3 @@ class Configuration():
             return self.minifiers[file_type]
         else:
             return None
-
