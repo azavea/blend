@@ -101,6 +101,12 @@ Exclude the current working directory from the requirement search paths.
    If you do not specify any paths using the -p,--path option and you also specify the -s,--skipcwd option then Blend
    will have no directories in which to search for required files and will be unable to merge your code.
 
+Specify A Configuration File
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+``-c, --config``
+
+Specify a JSON confguration file that describes the analyzers and minifiers to be used.
+
 
 Adding Requirements To Files
 =================================
@@ -209,7 +215,35 @@ directory structure looks like this::
 
 Then running ``blend`` will succeed because the JSLint analyzer will skip over ``project/lib/jquery.min.js``.
 
-What's Missing
-==============
+Configuring Blend
+=================
 
-The default Blend configuration cannot be overridden using a project level configuration file.
+Blend can read configuration options from a JSON formatted file. Here is what the default configuration looks like::
+
+    {
+      "analyzers": {
+        "javascript": [
+          {
+            "name": "blend.JSLintAnalyzer",
+            "skip_list": [
+              "bin"
+            ]
+          }
+        ]
+      },
+      "minifiers" {
+        "javascript": {
+          "name": "blend.YUICompressorMinifier"
+        },
+        "css": {
+          "name": blend.YUICompressorMinifier"
+        }
+      }
+    }
+
+Blend can load configuration files in two ways:
+
+1. From ``{current working directory}/.blend/config.json``
+2. From a file specifed with the ``-c,--config`` command line argument
+
+A config file specified with the ``-c,--config`` command line argument will override a ``.blend/config.json`` file.

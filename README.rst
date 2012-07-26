@@ -96,6 +96,11 @@ Skip Working Directory
 
 Exclude the current working directory from the requirement search paths.
 
+Specify A Configuration File
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+``-c, --config``
+
+Specify a JSON confguration file that describes the analyzers and minifiers to be used.
 
 Installation
 ============
