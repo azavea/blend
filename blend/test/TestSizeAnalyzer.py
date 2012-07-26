@@ -26,7 +26,7 @@ import unittest
 import os
 import shutil
 import tempfile
-from helpers import create_test_file_with_content
+from helpers import create_file_with_content
 from blend import SizeAnalyzer, Resource
 
 
@@ -36,7 +36,7 @@ class TestSizeAnalyzer(unittest.TestCase):
         self.analyzer = SizeAnalyzer()
         self.test_env_dir = tempfile.mkdtemp()
         self.test_file_path = os.path.join(self.test_env_dir, 'test_file.txt')
-        create_test_file_with_content(self.test_file_path, 'some\ttext\non two lines')
+        create_file_with_content(self.test_file_path, 'some\ttext\non two lines')
         self.resource = Resource(self.test_file_path)
 
     def tearDown(self):

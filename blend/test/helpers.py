@@ -26,7 +26,7 @@ import os
 import shutil
 
 
-def create_test_files(paths_to_files):
+def create_files(paths_to_files):
     if isinstance(paths_to_files, basestring):
         internal_paths_to_files = [paths_to_files]
     else:
@@ -38,8 +38,8 @@ def create_test_files(paths_to_files):
             open(path_to_file, 'w').close()
 
 
-def create_test_file_with_content(path_to_test_file, content):
-    create_test_files(path_to_test_file)
+def create_file_with_content(path_to_test_file, content):
+    create_files(path_to_test_file)
     f = open(path_to_test_file, 'w')
     try:
         f.write(content)
@@ -47,7 +47,7 @@ def create_test_file_with_content(path_to_test_file, content):
         f.close()
 
 
-def clean_up_test_files(paths_to_files):
+def clean_up_files(paths_to_files):
     if isinstance(paths_to_files, basestring):
         internal_paths_to_files = [paths_to_files]
     else:

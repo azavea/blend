@@ -35,7 +35,7 @@ import os
 import shutil
 import tempfile
 
-from helpers import clean_output, create_test_file_with_content
+from helpers import clean_output, create_file_with_content
 
 
 class TestConfiguration(unittest.TestCase):
@@ -77,7 +77,7 @@ class TestConfiguration(unittest.TestCase):
 
     def test_can_load_analyzers_from_config_file(self):
         config_file_path = os.path.join(self.test_env_dir, 'blend.config')
-        create_test_file_with_content(config_file_path,
+        create_file_with_content(config_file_path,
 """{
     "analyzers": {
         "javascript": [
@@ -100,7 +100,7 @@ class TestConfiguration(unittest.TestCase):
 
     def test_can_load_minfiers_from_config_file(self):
         config_file_path = os.path.join(self.test_env_dir, 'blend.config')
-        create_test_file_with_content(config_file_path,
+        create_file_with_content(config_file_path,
             """{
                 "minifiers": {
                     "javascript": {

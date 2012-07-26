@@ -1,3 +1,4 @@
+.autonose-depends.pickle
 *.pyc
 .idea
 MANIFEST

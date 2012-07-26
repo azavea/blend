@@ -26,7 +26,7 @@ import unittest
 import os
 import shutil
 import tempfile
-from helpers import create_test_file_with_content
+from helpers import create_file_with_content
 from blend import YUICompressorMinifier, Resource
 
 
@@ -40,17 +40,17 @@ class TestYUICompressorMinifier(unittest.TestCase):
 
     def make_an_empty_js_file(self):
         test_file_path = os.path.join(self.test_env_dir, 'test.js')
-        create_test_file_with_content(test_file_path, '')
+        create_file_with_content(test_file_path, '')
         return test_file_path
 
     def make_a_js_file(self, content='var answer = 42;'):
         test_file_path = os.path.join(self.test_env_dir, 'test.js')
-        create_test_file_with_content(test_file_path, content)
+        create_file_with_content(test_file_path, content)
         return test_file_path
 
     def make_a_minified_js_file(self, separator='.'):
         test_file_path = os.path.join(self.test_env_dir, 'test%smin.js' % separator)
-        create_test_file_with_content(test_file_path, 'var a=42;')
+        create_file_with_content(test_file_path, 'var a=42;')
         return test_file_path
 
     def test_analysis_fails_when_lib_dir_is_not_found(self):
