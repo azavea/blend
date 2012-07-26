@@ -39,13 +39,19 @@ class Application():
     DEFAULT_PATH_LIST = []
     DEFAULT_INCLUDE_CWD = True
     DEFAULT_FILE_LIST = []
+    DEFAULT_CONFIG_FILE_PATH = os.path.join(os.getcwd(), '.blend', 'config.json')
 
     def __init__(self, path_list=DEFAULT_PATH_LIST, include_cwd=DEFAULT_INCLUDE_CWD,
-                 file_list=DEFAULT_FILE_LIST, output_dir=DEFAULT_OUTPUT_DIR):
+                 file_list=DEFAULT_FILE_LIST, output_dir=DEFAULT_OUTPUT_DIR, config_file_path=DEFAULT_CONFIG_FILE_PATH):
         self.paths = Paths(*path_list, include_cwd=include_cwd)
         self.include_cwd = include_cwd
         self.file_list = file_list
         self.output_dir = output_dir
+        if os.path.exists(config_file_path):
+            print config_file_path
+            self.config = Configuration(config_file_path)
+        else:
+            self.config = self._create_default_configuration()
 
     def _create_default_configuration(self):
         config = Configuration()
@@ -56,8 +62,6 @@ class Application():
 
     def run(self):
         try:
-            self.config = self._create_default_configuration()
-
             if not os.path.exists(self.output_dir):
                 os.makedirs(self.output_dir)
 
@@ -155,11 +159,17 @@ current working directory and all outputs are written to that directory.""")
             action='store_true',
             help='exclude the current working directory from the search path')
 
+        parser.add_option("-c", "--config",
+            default=Application.DEFAULT_CONFIG_FILE_PATH,
+            dest='config_file_path',
+            metavar='CONFIG',
+            help='the JSON format config file from which to load application settings')
+
         options, arguments = parser.parse_args()
 
         file_list = arguments or []
 
-        app = Application(options.path, not options.skip_cwd, file_list, options.output_dir)
+        app = Application(options.path, not options.skip_cwd, file_list, options.output_dir, options.config_file_path)
         sys.exit(app.run())
 
 if __name__ == '__main__':
