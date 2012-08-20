@@ -1,3 +1,5 @@
+blend v0.1.1 2012-08-20 -- Fix exception being thrown when the JSLintAnalyzer attempted to report errors.
+
 blend v0.1.0 2012-07-26 -- Load configuration from a file specified on the command line or from .blend/config.json.
 
 blend v0.0.1 -- Initial release.
