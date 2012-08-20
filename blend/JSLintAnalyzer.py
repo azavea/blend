@@ -118,16 +118,12 @@ class JSLintAnalyzer(Analyzer):
                 subprocess.PIPE, subprocess.PIPE)
             js_lint_proc_outputs = js_lint_proc.communicate(resource.content)
         except Exception as e:
-            if analysis.errors is None:
-                analysis.errors = []
-            analysis.errors.append("An exception what thrown while running JsLint: " + str(e))
+            analysis.add_error("An exception what thrown while running JsLint: " + str(e))
             return analysis
 
         # The JSLint process returns 1 if it finds lint
         if js_lint_proc.returncode != 0 and js_lint_proc.returncode != 1:
-            if analysis.errors is None:
-                analysis.errors = []
-            analysis.errors.append('The JSLint process exited with return code %d\nArguments: %s\n Output: %s'
+            analysis.add_error('The JSLint process exited with return code %d\nArguments: %s\n Output: %s'
                 % (js_lint_proc.returncode, self._js_lint_proc_args, js_lint_proc_outputs))
             return analysis
 
