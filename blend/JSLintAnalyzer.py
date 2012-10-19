@@ -26,6 +26,7 @@ import os
 import re
 import platform
 import subprocess
+import traceback
 from Analyzer import Analyzer
 from helpers import first_file_name_in_path_matching_regex
 
@@ -118,7 +119,8 @@ class JSLintAnalyzer(Analyzer):
                 subprocess.PIPE, subprocess.PIPE)
             js_lint_proc_outputs = js_lint_proc.communicate(resource.content)
         except Exception as e:
-            analysis.add_error("An exception what thrown while running JsLint: " + str(e))
+            analysis.add_error("An exception what thrown while running JsLint: %s\n%s" %
+                (str(e), traceback.format_exc))
             return analysis
 
         # The JSLint process returns 1 if it finds lint
