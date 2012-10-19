@@ -35,8 +35,8 @@ class TestSizeAnalyzer(unittest.TestCase):
     def setUp(self):
         self.analyzer = SizeAnalyzer()
         self.test_env_dir = tempfile.mkdtemp()
-        self.test_file_path = os.path.join(self.test_env_dir, 'test_file.txt')
-        create_file_with_content(self.test_file_path, 'some\ttext\non two lines')
+        self.test_file_path = os.path.join(self.test_env_dir, 'test_file.js')
+        create_file_with_content(self.test_file_path, '//some\ttext\non two lines')
         self.resource = Resource(self.test_file_path)
 
     def tearDown(self):
@@ -59,7 +59,7 @@ class TestSizeAnalyzer(unittest.TestCase):
 
     def test_analysis_message_contatins_char_count_line_count_and_file_size(self):
         analysis = self.analyzer.analyze(self.resource)
-        self.assertEqual('%s: %d characters in %d lines for %d bytes' % (self.resource.path_to_file, 21, 2, 22), analysis.messages[0])
+        self.assertEqual('%s: %d characters in %d lines for %d bytes' % (self.resource.path_to_file, 23, 2, 24), analysis.messages[0])
 
     def test_analysis_converted_to_string_is_the_single_message(self):
         analysis = self.analyzer.analyze(self.resource)

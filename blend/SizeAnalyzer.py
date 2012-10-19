@@ -30,7 +30,10 @@ class SizeAnalyzer(Analyzer):
     def analyze(self, resource):
         analysis = Analyzer.analyze(self, resource)
         # This analyzer only computes the size of the content, it does not judge the quality
-        lines = resource.content.split('\n')
+        if resource.content:
+            lines = resource.content.split('\n')
+        else:
+            lines = []
         analysis.mark_as_good()
         if len(lines) == 1:
             line_noun = 'line'

@@ -34,15 +34,55 @@ class Resource:
     """
     Representation of a file on disk
     """
-    def __init__(self, path_to_file):
+
+    # The load() class method caches Resources instances here to avoid loading
+    # files multiple times.
+    cache = {}
+
+    @staticmethod
+    def _validate_path_to_file(path_to_file):
         """
-        Arguments:
+        Raise an exception if the path_to_file argument is None or is not a string.
+
         path_to_file -- The path at which the physical file is/will be located.
         """
         if not path_to_file:
             raise Exception('Resource must be created with a path_to_file')
         if not isinstance(path_to_file, str):
             raise Exception('The path_to_file argument must be set to a string')
+
+    @staticmethod
+    def load(path_to_file):
+        """
+        Returns a Resource instance from the global cache if it exists, otherwise
+        creates and returns a new Resource instance.
+
+        path_to_file -- The path at which the physical file is/will be located.
+        """
+        Resource._validate_path_to_file(path_to_file)
+        if path_to_file not in Resource.cache:
+            Resource.cache[path_to_file] = Resource(path_to_file)
+        return Resource.cache[path_to_file]
+
+    @staticmethod
+    def reload(path_to_file):
+        """
+        Removes any previously cached Resource instance for the path_to_file
+        argument and returns a new Resource instance.
+
+        path_to_file -- The path at which the physical file is/will be located.
+        """
+        Resource._validate_path_to_file(path_to_file)
+        if path_to_file in Resource.cache:
+            Resource.cache.remove(path_to_file)
+        return Resource.load(path_to_file)
+
+    def __init__(self, path_to_file):
+        """
+        Arguments:
+        path_to_file -- The path at which the physical file is/will be located.
+        """
+        Resource._validate_path_to_file(path_to_file)
 
         self._path_to_file = path_to_file
         self._extension, self._file_type = Resource._parse_extension_and_file_type(path_to_file)
@@ -60,7 +100,7 @@ class Resource:
         If path_to_file specifies a non-existent file the _content member variable is
         set to None
         """
-        if os.path.exists(path_to_file):
+        if os.path.exists(path_to_file) and self._file_type != 'unknown':
             self._size = os.path.getsize(path_to_file)
             f = open(path_to_file, 'r')
             try:
@@ -337,9 +377,10 @@ class Resource:
         for dir_path, dir_names, file_names in os.walk(path):
             if skip_path is None or os.path.abspath(dir_path) != os.path.abspath(skip_path):
                 for file_name in file_names:
-                    resource = Resource(os.path.join(dir_path, file_name))
-                    if resource.file_type == file_type:
-                        resources.append(resource)
+                    absolute_file_path = os.path.join(dir_path, file_name)
+                    ext, r_type = Resource._parse_extension_and_file_type(absolute_file_path)
+                    if file_type == r_type:
+                        resources.append(Resource.load(absolute_file_path))
         return resources
 
     @staticmethod
@@ -358,7 +399,7 @@ class Resource:
                     absolute_file_path = os.path.join(dir_path, file_name)
                     ext, file_type = Resource._parse_extension_and_file_type(absolute_file_path)
                     if file_type != 'unknown':
-                        resources_in_path.append(Resource(absolute_file_path))
+                        resources_in_path.append(Resource.load(absolute_file_path))
             resources.extend(resources_in_path)
         return resources if len(resources) > 0 else None
 
