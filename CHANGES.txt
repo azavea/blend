@@ -1,3 +1,7 @@
+blend v0.1.2 2012-10-26 -- Fix incorrect parsing of the Resource
+base name which prevented dependencies from being resolved.
+(See: https://github.com/azavea/blend/issues/1)
+
 blend v0.1.1 2012-08-20 -- Fix exception being thrown when the JSLintAnalyzer attempted to report errors.
 
 blend v0.1.0 2012-07-26 -- Load configuration from a file specified on the command line or from .blend/config.json.
