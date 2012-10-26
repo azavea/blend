@@ -183,7 +183,14 @@ class Resource:
         if dash == '':
             return lower_name, minified
         else:
-            return lower_name_without_version, minified
+            # If the segment of the file name after the last '-' is a
+            # number, then the segment is a version number, otherwise
+            # it is just part of the file name and should not be
+            # stripped off
+            if len(version) > 0 and version[0].isdigit():
+                return lower_name_without_version, minified
+            else:
+                return lower_name, minified
 
     @property
     def path_to_file(self):

@@ -99,6 +99,7 @@ class TestResource(unittest.TestCase):
             ('/usr/local/file.js',       'file'),
             ('FILE.JS',                  'file'),
             ('some-Plugin-2.3.2-min.js', 'some-plugin'),
+            ('some-dashed-file-name.js', 'some-dashed-file-name'),
             ('jQuery-1.2.3.js',          'jquery')]
         for test_file_path, expected_base_name in test_file_paths_and_expected_base_names:
             resource = Resource(test_file_path)
