@@ -28,6 +28,9 @@ from Minification import Minification
 
 class Minifier():
 
+    def __init__(self, options=None):
+        self._options = options or {}
+
     def minify(self, resource):
         if resource is not None and not isinstance(resource, Resource):
             raise Exception('minify must be called with a Resource instance')

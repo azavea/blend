@@ -32,10 +32,11 @@ from helpers import first_file_name_in_path_matching_regex
 
 class YUICompressorMinifier(Minifier):
 
-    def __init__(self, lib_path=None):
+    def __init__(self, options=None):
+        self._options = options or {}
         self._yuic_proc_args = None
         self._module_path = os.path.dirname(os.path.realpath(__file__))
-        self._lib_path = lib_path or os.path.join(self._module_path, 'lib')
+        self._lib_path = self._options.get('lib_path', os.path.join(self._module_path, 'lib'))
         self._yuic_jar_regex = re.compile(r'^yuicompressor.*\.jar$')
         self._yuic_jar_file_path = first_file_name_in_path_matching_regex(self._lib_path, self._yuic_jar_regex)
 
@@ -51,7 +52,9 @@ class YUICompressorMinifier(Minifier):
             minification.mark_as_good()
             minification.add_message('The resource %s is already minified.' % resource.path_to_file)
         else:
-            yuic_proc_args = ["java", "-jar", self._yuic_jar_file_path, resource.path_to_file]
+            yuic_proc_args = ["java"]
+            yuic_proc_args.extend(self._options.get('args', []))
+            yuic_proc_args.extend(["-jar", self._yuic_jar_file_path, resource.path_to_file])
             yuic_proc = subprocess.Popen(yuic_proc_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             yuic_output = yuic_proc.communicate()
 

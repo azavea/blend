@@ -28,6 +28,9 @@ from Analysis import Analysis
 
 class Analyzer():
 
+    def __init__(self, options=None):
+        pass  # The base class has no initialization to do
+
     def analyze(self, resource):
         if resource is not None and not isinstance(resource, Resource):
             raise Exception('analyze must be called with a Resource instance')

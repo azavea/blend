@@ -55,7 +55,7 @@ class TestYUICompressorMinifier(unittest.TestCase):
 
     def test_analysis_fails_when_lib_dir_is_not_found(self):
         invalid_lib_path = '/some/invalid/path'
-        yuic = YUICompressorMinifier(lib_path=invalid_lib_path)
+        yuic = YUICompressorMinifier({'lib_path': invalid_lib_path})
         test_resource = Resource(self.make_a_js_file())
         minification = yuic.minify(test_resource)
         self.assertFalse(minification.good, 'Expected the minification to be bad since the tools could not be found')

@@ -27,6 +27,9 @@ from Analyzer import Analyzer
 
 class SizeAnalyzer(Analyzer):
 
+    def __init__(self, options=None):
+        self._options = options or {}
+
     def analyze(self, resource):
         analysis = Analyzer.analyze(self, resource)
         # This analyzer only computes the size of the content, it does not judge the quality

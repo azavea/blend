@@ -49,7 +49,7 @@ class TestJSLintAnalyzer(unittest.TestCase):
         return test_file_path
 
     def test_analysis_fails_when_lib_dir_is_not_found(self):
-        jsl = JSLintAnalyzer(lib_path='/some/invalid/path', use_nodejs_if_available=False)
+        jsl = JSLintAnalyzer({'lib_path': '/some/invalid/path', 'use_nodejs_if_available': False})
         test_resource = Resource(self.make_a_js_file_with_no_lint())
         analysis = jsl.analyze(test_resource)
         self.assertFalse(analysis.good, 'Expected the analysis to be bad since the tools could not be found')

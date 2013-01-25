@@ -52,10 +52,11 @@ class Configuration():
                     analyzer_list = analyzers_dict[file_type]
                     for analyzer_dict in analyzer_list:
                         analyzer_class = self._get_class(analyzer_dict['name'])
+                        analyzer_options = analyzer_dict.get('options', None)
                         if 'skip_list' in analyzer_dict:
-                            self.add_analyzer_for_file_type(analyzer_class(), file_type, analyzer_dict['skip_list'])
+                            self.add_analyzer_for_file_type(analyzer_class(analyzer_options), file_type, analyzer_dict['skip_list'])
                         else:
-                            self.add_analyzer_for_file_type(analyzer_class(), file_type)
+                            self.add_analyzer_for_file_type(analyzer_class(analyzer_options), file_type)
 
             if 'minifiers' in configuration_dict:
                 minifiers_dict = configuration_dict['minifiers']
