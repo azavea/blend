@@ -105,7 +105,7 @@ class Configuration():
                             skip_list = skip_lists_for_file_type[resource.file_type]
                             skip = False
                             for pattern in skip_list:
-                                if  os.path.isabs(pattern):
+                                if os.path.isabs(pattern):
                                     full_pattern = pattern
                                 else:
                                     full_pattern = os.path.join(os.getcwd(), pattern)
