@@ -55,7 +55,12 @@ class Application():
 
     def _create_default_configuration(self):
         config = Configuration()
-        config.add_analyzer_for_file_type(JSLintAnalyzer(), 'javascript', [os.path.join('lib', '*')])
+        # By default, skip analysis for any file in a 'lib' folder no matter how deeply
+        # nested in the project.
+        config.add_analyzer_for_file_type(JSLintAnalyzer(), 'javascript', [
+            os.path.join('lib', '*'),
+            os.path.join('*', 'lib', '*')
+        ])
         config.set_minifier_for_file_type(YUICompressorMinifier(), 'javascript')
         config.set_minifier_for_file_type(YUICompressorMinifier(), 'css')
         return config

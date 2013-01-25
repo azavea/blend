@@ -139,11 +139,16 @@ class TestConfiguration(unittest.TestCase):
 
     def test_get_analyzers_for_resource_with_skip_list(self):
         lib_resource = Resource(os.path.join(os.getcwd(), 'lib', 'jquery.js'))
+        deep_lib_resource = Resource(os.path.join(os.getcwd(), 'deeply', 'nested', 'lib', 'backbone.js'))
         src_resource = Resource(os.path.join(os.getcwd(), 'src', 'file.js'))
         conf = Configuration()
         analyzer = Analyzer()
-        conf.add_analyzer_for_file_type(analyzer, 'javascript', ['lib/*'])
+        conf.add_analyzer_for_file_type(analyzer, 'javascript', [
+            os.path.join('lib', '*'),
+            os.path.join('*', 'lib', '*')
+        ])
         self.assertIsNone(conf.get_analyzers_for_resource(lib_resource))
+        self.assertIsNone(conf.get_analyzers_for_resource(deep_lib_resource))
         self.assertEqual([analyzer], conf.get_analyzers_for_resource(src_resource))
 
     def test_add_analyzer_for_file_type_raises_when_skip_list_is_a_string(self):
