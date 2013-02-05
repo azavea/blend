@@ -55,7 +55,7 @@ setup(
     author='Justin Walgran',
     author_email='jwalgran@azavea.com',
     packages=['blend', 'blend.test'],
-    scripts=['bin/blend'],
+    scripts=['bin/blend', 'bin/blend.bat'],
     package_data={'blend': [
         'lib/js.jar',
         'lib/js_LICENSE.TXT',
