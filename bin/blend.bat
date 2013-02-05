@@ -1,2 +1,2 @@
 @ECHO OFF
-python blend %*
+python %~dp0blend %*
