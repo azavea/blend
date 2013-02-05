@@ -122,7 +122,7 @@ class JSLintAnalyzer(Analyzer):
             js_lint_proc_outputs = js_lint_proc.communicate(resource.content)
         except Exception as e:
             analysis.add_error("An exception what thrown while running JsLint: %s\n%s" %
-                (str(e), traceback.format_exc))
+                (str(e), traceback.format_exc()))
             return analysis
 
         # The JSLint process returns 1 if it finds lint
