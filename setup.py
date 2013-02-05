@@ -51,7 +51,7 @@ class RunTests(Command):
 
 setup(
     name='Blend',
-    version='0.1.3',
+    version='0.1.4',
     author='Justin Walgran',
     author_email='jwalgran@azavea.com',
     packages=['blend', 'blend.test'],
