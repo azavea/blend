@@ -1,5 +1,6 @@
 include *.txt
 include *.rst
+include blend/lib/*
 recursive-include docs *.txt
 
 
