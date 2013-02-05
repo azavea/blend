@@ -1,3 +1,6 @@
+blend v0.1.3 2013-02-05 -- Allow analyzers and minifiers to accept arguments from the config file. By default, exclude
+analysis for any file with a 'lib' folder in the path. Add a windows batch file for launching blend from the command line.
+
 blend v0.1.2 2012-10-26 -- Fix incorrect parsing of the Resource
 base name which prevented dependencies from being resolved.
 (See: https://github.com/azavea/blend/issues/1)
